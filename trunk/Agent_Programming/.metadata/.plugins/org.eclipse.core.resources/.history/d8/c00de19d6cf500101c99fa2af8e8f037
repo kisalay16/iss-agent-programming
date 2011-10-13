@@ -1,0 +1,21 @@
+package message;
+
+public class reqFlightAvailability {
+	private String sOrigin_Country;
+	
+	public void setOrigin_Country(String sInput){
+		this.sOrigin_Country = sInput;
+	}
+	public String getOrgin_Country(){
+		return this.sOrigin_Country;
+	}
+	
+private String sOrigin_Country;
+	
+	public void setOrigin_Country(String sInput){
+		this.sOrigin_Country = sInput;
+	}
+	public String getOrgin_Country(){
+		return this.sOrigin_Country;
+	}
+}
