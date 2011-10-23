@@ -23,11 +23,11 @@ import message.msgReqFlightAvailability;
 public class TravelAgent extends Agent{
     //refer to http://www.iro.umontreal.ca/~dift6802/jade/src/examples/bookTrading/BookBuyerAgent.java
     
-    // The list of known seller agents
-    private AID[] travelAgentID;
     private TravelAgentGUI travelGUI;
     private DFAgentDescription dfd;
     private ServiceDescription sd;
+    
+    private AID[] flightAgents; //all known flight agents available
     
     private msgReqFlightAvailability msgRefFlightAva = new msgReqFlightAvailability();
     
@@ -36,6 +36,31 @@ public class TravelAgent extends Agent{
         travelGUI = new TravelAgentGUI(this);
         travelGUI.showGUI();
         
+        // Add a TickerBehaviour that schedules a request to seller agents every minute
+        addBehaviour(new TickerBehaviour(this, 60000) {
+            protected void onTick() {
+            // Update the list of seller agents
+            DFAgentDescription template = new DFAgentDescription();
+            ServiceDescription sd = new ServiceDescription();
+            sd.setType("flight-selling");
+            template.addServices(sd);
+            try {
+                DFAgentDescription[] result = DFService.search(myAgent, template); 
+                System.out.println("Found the following Flight Agents:");
+                flightAgents = new AID[result.length];
+                for (int i = 0; i < result.length; ++i) {
+                    flightAgents[i] = result[i].getName();
+                    System.out.println(flightAgents[i].getName());
+                }
+            }
+            catch (FIPAException fe) {
+                    fe.printStackTrace();
+            }
+
+            // Perform the request
+            //myAgent.addBehaviour(new RequestPerformer());
+            }
+        } );
     }
     
     public void determineAction(int iInput){
