@@ -205,7 +205,7 @@
     <Component class="javax.swing.JButton" name="btnReqFlightDetails">
       <Properties>
         <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.swingapp.ActionEditor">
-          <action class="TravelAgentGUI" id="reqFlightDetails" methodName="reqFlightDetails"/>
+          <action class="GUI.TravelAgentGUI" id="reqFlightDetails" methodName="reqFlightDetails"/>
         </Property>
         <Property name="text" type="java.lang.String" resourceKey="btnReqFlightDetails.text"/>
         <Property name="name" type="java.lang.String" value="btnReqFlightDetails" noResource="true"/>

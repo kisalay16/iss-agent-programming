@@ -211,8 +211,8 @@ public class TravelAgentGUI extends javax.swing.JFrame {
         
         this.travelA = new TravelAgent();
         this.travelA.setMsgFlightAva(reqFlightAva);
-        JOptionPane.showMessageDialog(null, reqFlightAva.getOnWard_Date().toString());
         
+        travelA.determineAction(1);
         
         //currently for events, 1 = getFlightAvailability
         //GuiEvent geGetFlightAvailability = new GuiEvent(this, 1); 
