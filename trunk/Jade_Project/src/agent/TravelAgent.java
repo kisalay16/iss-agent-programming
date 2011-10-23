@@ -70,7 +70,7 @@ public class TravelAgent extends Agent{
             
         if(iInput == 1){    
             // Register the book-selling service in the yellow pages
-            sd.setType("flight-enquiry");
+            sd.setType("flight-selling");
             sd.setName("JADE-flight-booking");
         }
         dfd.addServices(sd);

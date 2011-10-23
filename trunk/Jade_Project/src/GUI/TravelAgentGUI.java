@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import message.msgReqFlightAvailability;
 import org.jdesktop.application.Action;
 
@@ -24,7 +25,7 @@ import org.jdesktop.application.Action;
  * @author henry
  */
 public class TravelAgentGUI extends javax.swing.JFrame {
-
+    
     private msgReqFlightAvailability msgReqFlightAva;
     private TravelAgent travelA;
     
