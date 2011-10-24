@@ -7,11 +7,15 @@ package Agent;
 import GUI.TravelAgentGUI;
 import jade.core.AID;
 import jade.core.Agent;
+import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
+import java.util.Date;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 import message.msgReqFlightAvailability;
@@ -103,4 +107,142 @@ public class TravelAgent extends Agent{
     public void setMsgFlightAva(msgReqFlightAvailability input){
         msgRefFlightAva = new msgReqFlightAvailability(input);
     }
+    
+    private class PurchaseFlightManager extends TickerBehaviour {
+        private String title;
+        private int maxPrice, startPrice;
+        private long deadline, initTime, deltaT;
+
+        private PurchaseFlightManager(Agent a, String t, int mp, Date d) {
+          super(a, 5000); // tick every 5 sec
+          title = t;
+          maxPrice = mp;
+          deadline = d.getTime();
+          initTime = System.currentTimeMillis();
+          deltaT = deadline - initTime;
+        }
+
+        public void onTick() {
+          long currentTime = System.currentTimeMillis();
+          if (currentTime > deadline) {
+            // Deadline expired
+            travelGUI.notifyUser("Cannot buy book "+title);
+            stop();
+          }
+          else {
+            // Compute the currently acceptable price and start a negotiation
+            long elapsedTime = currentTime - initTime;
+            int acceptablePrice = (int)Math.round(1.0 * maxPrice * (1.0 * elapsedTime / deltaT));
+            // System.out.println("elapsedTime"+elapsedTime+"deltaT"+deltaT+"acceptablePrice"+acceptablePrice+"maxPrice="+maxPrice);
+            myAgent.addBehaviour(new BookNegotiator(title, acceptablePrice, this));
+          }
+        }
+    }
+    
+    private class BookNegotiator extends Behaviour {
+        private String title;
+        private int maxPrice;
+        private PurchaseFlightManager flightPurchase_Manager;
+        private AID bestSeller; // The seller agent who provides the best offer
+        private int bestPrice; // The best offered price
+        private int repliesCnt = 0; // The counter of replies from seller agents
+        private MessageTemplate mt; // The template to receive replies
+        private int step = 0;
+
+        public BookNegotiator(String t, int p, PurchaseFlightManager m) {
+          super(null);
+          title = t;
+          maxPrice = p;
+          flightPurchase_Manager = m;
+        }
+
+    public void action() {
+      switch (step) {
+        case 0:
+          // Send the cfp to all sellers
+          ACLMessage cfp = new ACLMessage(ACLMessage.CFP);
+          for (int i = 0; i < flightAgentList.size(); ++i) {
+            cfp.addReceiver((AID)flightAgentList.elementAt(i));
+          }
+          cfp.setContent(title);
+          cfp.setConversationId("flight-trade");
+          cfp.setReplyWith("cfp"+ System.currentTimeMillis()); // Unique value
+          myAgent.send(cfp);
+          travelGUI.notifyUser("Sent Call for Proposal");
+
+          // Prepare the template to get proposals
+          mt = MessageTemplate.and(
+          MessageTemplate.MatchConversationId("flight-trade"),
+          MessageTemplate.MatchInReplyTo(cfp.getReplyWith()));
+          step = 1;
+          break;
+        case 1:
+          // Receive all proposals/refusals from seller agents
+          ACLMessage reply = myAgent.receive(mt);
+          if (reply != null) {
+            // Reply received
+            if (reply.getPerformative() == ACLMessage.PROPOSE) {
+              // This is an offer
+              int price = Integer.parseInt(reply.getContent());
+              travelGUI.notifyUser("Received Proposal at "+price+" when maximum acceptable price was "+maxPrice);
+              if (bestSeller == null || price < bestPrice) {
+                // This is the best offer at present
+                bestPrice = price;
+                bestSeller = reply.getSender();
+              }
+            }
+            repliesCnt++;
+            if (repliesCnt >= flightAgentList.size()) {
+              // We received all replies
+              step = 2;
+            }
+          }
+          else {
+            block();
+          }
+          break;
+        case 2:
+          if (bestSeller != null && bestPrice <= maxPrice) {
+            // Send the purchase order to the seller that provided the best offer
+            ACLMessage order = new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
+            order.addReceiver(bestSeller);
+            order.setContent(title);
+            order.setConversationId("book-trade");
+            order.setReplyWith("order"+System.currentTimeMillis());
+            myAgent.send(order);
+            travelGUI.notifyUser("sent Accept Proposal");
+            // Prepare the template to get the purchase order reply
+            mt = MessageTemplate.and(
+              MessageTemplate.MatchConversationId("book-trade"),
+              MessageTemplate.MatchInReplyTo(order.getReplyWith()));
+            step = 3;
+          }
+          else {
+            // If we received no acceptable proposals, terminate
+            step = 4;
+          }
+          break;
+        case 3:
+          // Receive the purchase order reply
+          reply = myAgent.receive(mt);
+          if (reply != null) {
+            // Purchase order reply received
+            if (reply.getPerformative() == ACLMessage.INFORM) {
+              // Purchase successful. We can terminate
+              travelGUI.notifyUser("Book "+title+" successfully purchased. Price = " + bestPrice);
+              flightPurchase_Manager.stop();
+            }
+            step = 4;
+          }
+          else {
+            block();
+          }
+          break;
+      } // end of switch
+    }
+
+    public boolean done() {
+      return step == 4;
+    }
+  } // End of inner class BookNegotiator
 }
