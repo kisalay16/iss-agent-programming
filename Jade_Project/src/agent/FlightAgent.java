@@ -7,6 +7,7 @@ package Agent;
 import GUI.TravelAgentGUI;
 import jade.core.AID;
 import jade.core.Agent;
+import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
@@ -40,6 +41,7 @@ public class FlightAgent extends Agent{
        //set up the flights available for booking
        flightAvaList = new msgFlightAvailability_Result("SIA", "Flight001", new Date(2011, 6, 11, 20, 30), new Date(2011, 6, 12, 7, 20), 1500.00, "Singapore", "London");
        flightAvaList = new msgFlightAvailability_Result("Qantas", "Flight002", new Date(2011, 6, 20, 8, 30), new Date(2011, 6, 21, 10, 35), 2000.00, "London", "Singapore");
+       
     }
     
     // Put agent clean-up operations here
@@ -60,4 +62,13 @@ public class FlightAgent extends Agent{
     public void setMsgFlightAva(msgReqFlightAvailability input){
         msgRefFlightAva = new msgReqFlightAvailability(input);
     }
+    
+    //to add new flights in the available flight list
+    public void addNewFlight(final String airline, final String flightID, final Date departDate, final Date arrivalDate, final Double total, final String origin_city, final String des_city) {
+            addBehaviour(new OneShotBehaviour() {
+            public void action() {
+                flightAvaList = new msgFlightAvailability_Result(airline, flightID, departDate, arrivalDate, total, origin_city, des_city);
+            }
+        } );
+    } 
 }
