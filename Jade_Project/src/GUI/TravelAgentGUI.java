@@ -237,6 +237,10 @@ public class TravelAgentGUI extends javax.swing.JFrame {
         
         return date;
     }
+    
+    public void notifyUser(String message) {
+        JOptionPane.showMessageDialog (null, message);
+    }
         
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnReqFlightDetails;
