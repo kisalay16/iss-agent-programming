@@ -4,13 +4,14 @@
  */
 package message;
 
+import jade.util.leap.Serializable;
 import java.util.Date;
 
 /**
  *
  * @author henry
  */
-public class msgReqFlightAvailability {
+public class msgReqFlightAvailability implements Serializable {
     
     public msgReqFlightAvailability(){
         
