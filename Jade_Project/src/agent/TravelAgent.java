@@ -13,8 +13,10 @@ import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
+import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Vector;
 import javax.swing.JOptionPane;
@@ -110,6 +112,7 @@ public class TravelAgent extends Agent{
     
     private class PurchaseFlightManager extends TickerBehaviour {
         private String title;
+        private msgReqFlightAvailability flight;
         private int maxPrice, startPrice;
         private long deadline, initTime, deltaT;
 
@@ -121,25 +124,32 @@ public class TravelAgent extends Agent{
           initTime = System.currentTimeMillis();
           deltaT = deadline - initTime;
         }
+        
+        private PurchaseFlightManager(Agent a, msgReqFlightAvailability f, Date d) {
+          super(a, 5000); // tick every 5 sec
+          flight = new msgReqFlightAvailability(f);
+          deadline = d.getTime();
+          initTime = System.currentTimeMillis();
+          deltaT = deadline - initTime;
+        }
 
         public void onTick() {
           long currentTime = System.currentTimeMillis();
           if (currentTime > deadline) {
             // Deadline expired
-            travelGUI.notifyUser("Cannot buy book "+title);
+            travelGUI.notifyUser("Cannot book flight!");
             stop();
           }
           else {
             // Compute the currently acceptable price and start a negotiation
             long elapsedTime = currentTime - initTime;
-            int acceptablePrice = (int)Math.round(1.0 * maxPrice * (1.0 * elapsedTime / deltaT));
-            // System.out.println("elapsedTime"+elapsedTime+"deltaT"+deltaT+"acceptablePrice"+acceptablePrice+"maxPrice="+maxPrice);
-            myAgent.addBehaviour(new BookNegotiator(title, acceptablePrice, this));
+            int acceptablePrice = (int)Math.round(1.0 * flight.getBudget() * (1.0 * elapsedTime / deltaT));
+            myAgent.addBehaviour(new FlightNegotiator(title, acceptablePrice, this));
           }
         }
     }
     
-    private class BookNegotiator extends Behaviour {
+    private class FlightNegotiator extends Behaviour {
         private String title;
         private int maxPrice;
         private PurchaseFlightManager flightPurchase_Manager;
@@ -148,11 +158,19 @@ public class TravelAgent extends Agent{
         private int repliesCnt = 0; // The counter of replies from seller agents
         private MessageTemplate mt; // The template to receive replies
         private int step = 0;
+        
+        private msgReqFlightAvailability flight;
 
-        public BookNegotiator(String t, int p, PurchaseFlightManager m) {
+        public FlightNegotiator(String t, int p, PurchaseFlightManager m) {
           super(null);
           title = t;
           maxPrice = p;
+          flightPurchase_Manager = m;
+        }
+        
+        public FlightNegotiator(msgReqFlightAvailability f, PurchaseFlightManager m) {
+          super(null);
+          flight = new msgReqFlightAvailability(f);
           flightPurchase_Manager = m;
         }
 
@@ -164,11 +182,31 @@ public class TravelAgent extends Agent{
           for (int i = 0; i < flightAgentList.size(); ++i) {
             cfp.addReceiver((AID)flightAgentList.elementAt(i));
           }
-          cfp.setContent(title);
+         
+          
+          try{
+              //please refer to \jade_example\src\examples\Base64
+              cfp.setContentObject(flight);
+              cfp.setLanguage("JavaSerialization");
+              
+              cfp.setDefaultEnvelope();
+              cfp.getEnvelope().setAclRepresentation(FIPANames.ACLCodec.BITEFFICIENT);
+              send(cfp);
+              System.out.println(getLocalName()+" sent 1st msg with bit-efficient aclCodec "+ cfp);
+              
+              cfp.getEnvelope().setAclRepresentation(FIPANames.ACLCodec.XML); 
+              send(cfp);
+              System.out.println(getLocalName()+" sent 1st msg with xml aclCodec "+ cfp);
+          }
+          catch(IOException ex){
+              travelGUI.notifyUser(ex.getMessage());
+              return;
+          }
+
           cfp.setConversationId("flight-trade");
-          cfp.setReplyWith("cfp"+ System.currentTimeMillis()); // Unique value
-          myAgent.send(cfp);
-          travelGUI.notifyUser("Sent Call for Proposal");
+          cfp.setReplyWith("cfp" + System.currentTimeMillis()); // Unique value
+          send(cfp);
+          travelGUI.notifyUser("Sent Call for Flight Proposal");
 
           // Prepare the template to get proposals
           mt = MessageTemplate.and(
