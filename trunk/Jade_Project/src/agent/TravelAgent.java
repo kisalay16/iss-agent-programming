@@ -29,6 +29,7 @@ import message.msgReqFlightAvailability;
  */
 public class TravelAgent extends Agent{
     //refer to http://www.iro.umontreal.ca/~dift6802/jade/src/examples/bookTrading/BookBuyerAgent.java
+    //setup -gui ASA:Agent.TravelAgent SIA:Agent.FlightAgent
     
     private TravelAgentGUI travelGUI;
     private DFAgentDescription dfd;
