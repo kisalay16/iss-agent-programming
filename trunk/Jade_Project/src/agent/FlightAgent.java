@@ -12,7 +12,9 @@ import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
+import java.util.Date;
 import javax.swing.JOptionPane;
+import message.msgFlightAvailability_Result;
 import message.msgReqFlightAvailability;
 
 
@@ -28,45 +30,31 @@ public class FlightAgent extends Agent{
     private ServiceDescription sd;
     
     private AID[] flightAgents; //all known flight agents available
+    private msgFlightAvailability_Result flightAvaList; //to keep track of all the available flight list
     
     private msgReqFlightAvailability msgRefFlightAva = new msgReqFlightAvailability();
     
     protected void setup() {
-       
+       System.out.println("Flight Agent Ready"); 
+        
+       //set up the flights available for booking
+       flightAvaList = new msgFlightAvailability_Result("SIA", "Flight001", new Date(2011, 6, 11, 20, 30), new Date(2011, 6, 12, 7, 20), 1500.00, "Singapore", "London");
+       flightAvaList = new msgFlightAvailability_Result("Qantas", "Flight002", new Date(2011, 6, 20, 8, 30), new Date(2011, 6, 21, 10, 35), 2000.00, "London", "Singapore");
     }
     
-    public void determineAction(int iInput){
-        dfd = new DFAgentDescription();
-        dfd.setName(getAID());
-        sd = new ServiceDescription();
-            
-        if(iInput == 1){    
-            // Register the book-selling service in the yellow pages
-            sd.setType("flight-selling");
-            sd.setName("JADE-flight-booking");
-        }
-        dfd.addServices(sd);
+    // Put agent clean-up operations here
+    protected void takeDown() {
+        // Deregister from the yellow pages
         try {
-            DFService.register(this, dfd);
+            DFService.deregister(this);
         }
         catch (FIPAException fe) {
             fe.printStackTrace();
         }
-    }
-    
-    // Put agent clean-up operations here
-	protected void takeDown() {
-            // Deregister from the yellow pages
-            try {
-                    DFService.deregister(this);
-            }
-            catch (FIPAException fe) {
-                    fe.printStackTrace();
-            }
-            // Close the GUI
-            travelGUI.dispose();
-            // Printout a dismissal message
-            System.out.println("Travel-Agent "+getAID().getName()+" terminating.");
+        // Close the GUI
+        travelGUI.dispose();
+        // Printout a dismissal message
+        System.out.println("Flight-Agent "+getAID().getName()+" terminating.");
     }
     
     public void setMsgFlightAva(msgReqFlightAvailability input){
