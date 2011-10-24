@@ -90,20 +90,15 @@ public class TravelAgent extends Agent{
         }
     }
     
-    // Put agent clean-up operations here
-	protected void takeDown() {
-            // Deregister from the yellow pages
-            try {
-                    DFService.deregister(this);
-            }
-            catch (FIPAException fe) {
-                    fe.printStackTrace();
-            }
-            // Close the GUI
-            travelGUI.dispose();
-            // Printout a dismissal message
-            System.out.println("Travel-Agent "+getAID().getName()+" terminating.");
-    }
+      protected void takeDown() {
+        // Dispose the GUI if it is there
+        if (travelGUI != null) {
+          travelGUI.dispose();
+        }
+
+        // Printout a dismissal message
+        System.out.println("Buyer-agent "+getAID().getName()+"terminated.");
+      }
     
     public void setMsgFlightAva(msgReqFlightAvailability input){
         msgRefFlightAva = new msgReqFlightAvailability(input);
