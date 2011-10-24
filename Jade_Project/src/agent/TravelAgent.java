@@ -16,10 +16,14 @@ import jade.domain.FIPAException;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import jade.lang.acl.UnreadableException;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import message.msgFlightAvailability_Result;
 import message.msgReqFlightAvailability;
 
 
@@ -177,7 +181,8 @@ public class TravelAgent extends Agent{
 
     public void action() {
       switch (step) {
-        case 0:
+      //done  
+      case 0:
           // Send the cfp to all sellers
           ACLMessage cfp = new ACLMessage(ACLMessage.CFP);
           for (int i = 0; i < flightAgentList.size(); ++i) {
@@ -215,20 +220,21 @@ public class TravelAgent extends Agent{
           MessageTemplate.MatchInReplyTo(cfp.getReplyWith()));
           step = 1;
           break;
+        //done
         case 1:
           // Receive all proposals/refusals from seller agents
           ACLMessage reply = myAgent.receive(mt);
+          //make sure there is an reply
           if (reply != null) {
             // Reply received
             if (reply.getPerformative() == ACLMessage.PROPOSE) {
-              // This is an offer
-              int price = Integer.parseInt(reply.getContent());
-              travelGUI.notifyUser("Received Proposal at "+price+" when maximum acceptable price was "+maxPrice);
-              if (bestSeller == null || price < bestPrice) {
-                // This is the best offer at present
-                bestPrice = price;
-                bestSeller = reply.getSender();
-              }
+                  try {
+                      // list of available flights
+                      msgFlightAvailability_Result avaFlights = (msgFlightAvailability_Result) reply.getContentObject();
+                  } catch (UnreadableException ex) {
+                     Logger.getLogger(TravelAgent.class.getName()).log(Level.SEVERE, null, ex);
+                  }
+                  travelGUI.notifyUser("Received available flight listing");
             }
             repliesCnt++;
             if (repliesCnt >= flightAgentList.size()) {
@@ -240,6 +246,7 @@ public class TravelAgent extends Agent{
             block();
           }
           break;
+        //to do
         case 2:
           if (bestSeller != null && bestPrice <= maxPrice) {
             // Send the purchase order to the seller that provided the best offer
@@ -261,6 +268,7 @@ public class TravelAgent extends Agent{
             step = 4;
           }
           break;
+        //to do
         case 3:
           // Receive the purchase order reply
           reply = myAgent.receive(mt);
