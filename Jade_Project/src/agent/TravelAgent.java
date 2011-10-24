@@ -12,6 +12,7 @@ import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
+import java.util.Vector;
 import javax.swing.JOptionPane;
 import message.msgReqFlightAvailability;
 
@@ -27,40 +28,26 @@ public class TravelAgent extends Agent{
     private DFAgentDescription dfd;
     private ServiceDescription sd;
     
-    private AID[] flightAgents; //all known flight agents available
+    // The list of known flight agents
+    private Vector flightAgentList = new Vector();
     
     private msgReqFlightAvailability msgRefFlightAva = new msgReqFlightAvailability();
     
     protected void setup() {
+        // Printout a welcome message
+        System.out.println("Travel-Agent "+ getAID().getName()+" is ready.");
+        // Get names of seller agents as arguments
+        Object[] args = getArguments();
+        if (args != null && args.length > 0) {
+            for (int i = 0; i < args.length; ++i) {
+                AID seller = new AID((String) args[i], AID.ISLOCALNAME);
+                flightAgentList.addElement(seller);
+            }
+        }
+        
         //to show the travelAgent UI
         travelGUI = new TravelAgentGUI(this);
         travelGUI.showGUI();
-        
-        // Add a TickerBehaviour that schedules a request to seller agents every minute
-        addBehaviour(new TickerBehaviour(this, 60000) {
-            protected void onTick() {
-            // Update the list of seller agents
-            DFAgentDescription template = new DFAgentDescription();
-            ServiceDescription sd = new ServiceDescription();
-            sd.setType("flight-selling");
-            template.addServices(sd);
-            try {
-                DFAgentDescription[] result = DFService.search(myAgent, template); 
-                System.out.println("Found the following Flight Agents:");
-                flightAgents = new AID[result.length];
-                for (int i = 0; i < result.length; ++i) {
-                    flightAgents[i] = result[i].getName();
-                    System.out.println(flightAgents[i].getName());
-                }
-            }
-            catch (FIPAException fe) {
-                    fe.printStackTrace();
-            }
-
-            // Perform the request
-            //myAgent.addBehaviour(new RequestPerformer());
-            }
-        } );
     }
     
     public void determineAction(int iInput){
