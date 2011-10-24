@@ -14,8 +14,10 @@ import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
+import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
+import java.io.IOException;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -97,7 +99,35 @@ public class FlightAgent extends Agent{
                 }
                 ACLMessage reply = msg.createReply();
                 //get all available flights according requirement
+                msgFlightAvailability_Result flightResult = flightAvaList.getFlightsAccordingToSpecs(msgRefFlightAva);
+                
+                if(flightResult.getCount() == 0){
+                    // The requested book is NOT available for sale.
+                    reply.setPerformative(ACLMessage.REFUSE);
+                    reply.setContent("not-available");
+                }
+                else{
+                    // The requested book is available for sale. Reply with the price
+                    reply.setPerformative(ACLMessage.PROPOSE);
+                    
+                    try{
+                        msg.setContentObject(flightResult);
+                        msg.setLanguage("JavaSerialization");
+                        
+                        msg.setDefaultEnvelope();
+                        msg.getEnvelope().setAclRepresentation(FIPANames.ACLCodec.BITEFFICIENT);
+                        send(msg);
+                        System.out.println(getLocalName()+" sent 1st msg with bit-efficient aclCodec "+ msg);
 
+                        msg.getEnvelope().setAclRepresentation(FIPANames.ACLCodec.XML); 
+                        send(msg);
+                        System.out.println(getLocalName()+" sent 1st msg with xml aclCodec "+ msg);
+                    }
+                    catch(IOException ex){
+                        return;
+                    }
+                }
+                
                 //to do    
                 /*    
                 if (price != null) {

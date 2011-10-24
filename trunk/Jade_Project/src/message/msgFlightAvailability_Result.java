@@ -4,6 +4,7 @@
  */
 package message;
 
+import jade.util.leap.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
  *
  * @author henry
  */
-public class msgFlightAvailability_Result {
+public class msgFlightAvailability_Result implements Serializable {
     
     //default constructor
     public msgFlightAvailability_Result(){
