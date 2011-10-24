@@ -48,6 +48,27 @@ public class TravelAgent extends Agent{
         //to show the travelAgent UI
         travelGUI = new TravelAgentGUI(this);
         travelGUI.showGUI();
+        
+        // Update the list of seller agents every 10 sec
+        addBehaviour(new TickerBehaviour(this, 5000) {
+          protected void onTick() {
+            // Update the list of seller agents
+            DFAgentDescription template = new DFAgentDescription();
+            ServiceDescription sd = new ServiceDescription();
+            sd.setType("flight-selling");
+            template.addServices(sd);
+            try {
+              DFAgentDescription[] result = DFService.search(myAgent, template);
+              flightAgentList.clear();
+              for (int i = 0; i < result.length; ++i) {
+                flightAgentList.addElement(result[i].getName());
+              }
+            }
+            catch (FIPAException fe) {
+              fe.printStackTrace();
+            }
+          }
+        } );
     }
     
     public void determineAction(int iInput){
