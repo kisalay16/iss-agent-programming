@@ -7,13 +7,18 @@ package Agent;
 import GUI.TravelAgentGUI;
 import jade.core.AID;
 import jade.core.Agent;
+import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.UnreadableException;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import message.msgFlightAvailability_Result;
 import message.msgReqFlightAvailability;
@@ -71,4 +76,46 @@ public class FlightAgent extends Agent{
             }
         } );
     } 
+    
+    /**
+        Inner class OfferFlightRequestsServer.
+        This is the behaviour used by flightAgent to serve incoming requests
+        for offer from buyer agents.
+        If the requested book is in the local catalogue the seller agent replies
+        with a PROPOSE message specifying the price. Otherwise a REFUSE message is
+        sent back.
+        */
+    private class OfferFlightRequestsServer extends CyclicBehaviour {
+        public void action() {
+            ACLMessage msg = myAgent.receive();
+            if (msg != null) {
+                try {
+                    // Message received. Process it
+                    msgReqFlightAvailability req = (msgReqFlightAvailability) msg.getContentObject();
+                } catch (UnreadableException ex) {
+                    Logger.getLogger(FlightAgent.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                ACLMessage reply = msg.createReply();
+                //get all available flights according requirement
+
+                //to do    
+                /*    
+                if (price != null) {
+                    // The requested book is available for sale. Reply with the price
+                    reply.setPerformative(ACLMessage.PROPOSE);
+                    reply.setContent(String.valueOf(price.intValue()));
+                    }
+                    else {
+                    // The requested book is NOT available for sale.
+                    reply.setPerformative(ACLMessage.REFUSE);
+                    reply.setContent(“not-available”);
+                }
+                 */
+                myAgent.send(reply);
+            }
+        }
+    } // End of inner class OfferRequestsServer
+    
+    
+    
 }
