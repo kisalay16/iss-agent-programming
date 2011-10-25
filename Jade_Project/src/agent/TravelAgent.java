@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import message.msgFlightAvailability_Result;
+import message.msgFlightAvailability_Result_List;
 import message.msgReqFlightAvailability;
 
 
@@ -230,7 +231,7 @@ public class TravelAgent extends Agent{
             if (reply.getPerformative() == ACLMessage.PROPOSE) {
                   try {
                       // list of available flights
-                      msgFlightAvailability_Result avaFlights = (msgFlightAvailability_Result) reply.getContentObject();
+                      msgFlightAvailability_Result_List avaFlights = (msgFlightAvailability_Result_List) reply.getContentObject();
                   } catch (UnreadableException ex) {
                      Logger.getLogger(TravelAgent.class.getName()).log(Level.SEVERE, null, ex);
                   }

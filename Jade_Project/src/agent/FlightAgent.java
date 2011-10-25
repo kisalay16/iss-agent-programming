@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import message.msgFlightAvailability_Result;
+import message.msgFlightAvailability_Result_List;
 import message.msgReqFlightAvailability;
 
 
@@ -38,7 +39,7 @@ public class FlightAgent extends Agent{
     private ServiceDescription sd;
     
     private AID[] flightAgents; //all known flight agents available
-    private msgFlightAvailability_Result flightAvaList; //to keep track of all the available flight list
+    private msgFlightAvailability_Result_List flightAvaList; //to keep track of all the available flight list
     
     private msgReqFlightAvailability msgRefFlightAva = new msgReqFlightAvailability();
     
@@ -46,8 +47,8 @@ public class FlightAgent extends Agent{
        System.out.println("Flight Agent Ready"); 
         
        //set up the flights available for booking
-       flightAvaList = new msgFlightAvailability_Result("SIA", "Flight001", new Date(2011, 6, 11, 20, 30), new Date(2011, 6, 12, 7, 20), 1500.00, "Singapore", "London");
-       flightAvaList = new msgFlightAvailability_Result("Qantas", "Flight002", new Date(2011, 6, 20, 8, 30), new Date(2011, 6, 21, 10, 35), 2000.00, "London", "Singapore");
+       flightAvaList.addFlight(new msgFlightAvailability_Result("SIA", "Flight001", new Date(2011, 6, 11, 20, 30), new Date(2011, 6, 12, 7, 20), 1500.00, "Singapore", "London"));
+       flightAvaList.addFlight(new msgFlightAvailability_Result("Qantas", "Flight002", new Date(2011, 6, 20, 8, 30), new Date(2011, 6, 21, 10, 35), 2000.00, "London", "Singapore"));
        
     }
     
@@ -70,15 +71,6 @@ public class FlightAgent extends Agent{
         msgRefFlightAva = new msgReqFlightAvailability(input);
     }
     
-    //to add new flights in the available flight list
-    public void addNewFlight(final String airline, final String flightID, final Date departDate, final Date arrivalDate, final Double total, final String origin_city, final String des_city) {
-            addBehaviour(new OneShotBehaviour() {
-            public void action() {
-                flightAvaList = new msgFlightAvailability_Result(airline, flightID, departDate, arrivalDate, total, origin_city, des_city);
-            }
-        } );
-    } 
-    
     /**
         Inner class OfferFlightRequestsServer.
         This is the behaviour used by flightAgent to serve incoming requests
@@ -99,9 +91,9 @@ public class FlightAgent extends Agent{
                 }
                 ACLMessage reply = msg.createReply();
                 //get all available flights according requirement
-                msgFlightAvailability_Result flightResult = flightAvaList.getFlightsAccordingToSpecs(msgRefFlightAva);
+                msgFlightAvailability_Result_List flightResult = flightAvaList.getFlightsAccordingToSpecs(msgRefFlightAva);
                 
-                if(flightResult.getCount() == 0){
+                if(flightResult.getSize() == 0){
                     // The requested book is NOT available for sale.
                     reply.setPerformative(ACLMessage.REFUSE);
                     reply.setContent("not-available");
