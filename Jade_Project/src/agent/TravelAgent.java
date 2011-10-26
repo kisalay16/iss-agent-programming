@@ -46,6 +46,8 @@ public class TravelAgent extends Agent{
     
     // The list of known flight agents
     private Vector flightAgentList = new Vector();
+    AID reader = new AID();
+    
     
     private msgReqFlightAvailability msgRefFlightAva = new msgReqFlightAvailability();
     
@@ -53,7 +55,7 @@ public class TravelAgent extends Agent{
           travelGUI = new TravelAgentGUI(this);
           travelGUI.showGUI();
           /** Search with the DF for the name of the ObjectReaderAgent **/
-          AID reader = new AID();
+          
           DFAgentDescription dfd = new DFAgentDescription();  
           ServiceDescription sd = new ServiceDescription();
           sd.setType("ObjectReaderAgent"); 
@@ -114,10 +116,9 @@ public class TravelAgent extends Agent{
         public void action() {
               // Send the cfp to all sellers
               ACLMessage cfp = new ACLMessage(ACLMessage.CFP);
-              for (int i = 0; i < flightAgentList.size(); ++i) {
-                cfp.addReceiver((AID)flightAgentList.elementAt(i));
-              }
-
+              
+             cfp.addReceiver(reader);
+              
               try{
                   //please refer to \jade_example\src\examples\Base64
                   cfp.setContentObject(flight);

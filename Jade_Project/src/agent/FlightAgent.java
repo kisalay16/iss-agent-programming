@@ -105,9 +105,6 @@ public class FlightAgent extends Agent{
                     Logger.getLogger(FlightAgent.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            else {
-                block();
-            }
         }
     }
     
