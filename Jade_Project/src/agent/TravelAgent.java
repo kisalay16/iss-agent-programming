@@ -102,23 +102,25 @@ public class TravelAgent extends Agent{
         try{
             addBehaviour(new RequestFlightDetails(input));
         }catch(Exception ex){
-            JOptionPane.showMessageDialog(null, ex.getMessage());
+            JOptionPane.showMessageDialog(null, reader);
         }
     }
     
     private class RequestFlightDetails extends CyclicBehaviour {
         private MessageTemplate mt; // The template to receive replies
+        int step = 0;
         
         public RequestFlightDetails(msgReqFlightAvailability input){
             flight = new msgReqFlightAvailability(input);
         }
         
         public void action() {
+            
               // Send the cfp to all sellers
               ACLMessage cfp = new ACLMessage(ACLMessage.CFP);
-              
-             cfp.addReceiver(reader);
-              
+
+              cfp.addReceiver(reader);
+
               try{
                   //please refer to \jade_example\src\examples\Base64
                   MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.CFP);
@@ -148,6 +150,7 @@ public class TravelAgent extends Agent{
               mt = MessageTemplate.and(
                 MessageTemplate.MatchConversationId("flight-trade"),
                 MessageTemplate.MatchInReplyTo(cfp.getReplyWith()));
+                     
         }
     } // End of inner class OfferRequestsServer
     

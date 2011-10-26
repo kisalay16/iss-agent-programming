@@ -40,7 +40,7 @@ public class FlightAgent extends Agent{
     private ServiceDescription sd;
     
     private AID[] flightAgents; //all known flight agents available
-    private msgFlightAvailability_Result_List flightAvaList; //to keep track of all the available flight list
+    private msgFlightAvailability_Result_List flightAvaList = new msgFlightAvailability_Result_List(); //to keep track of all the available flight list
     
     private msgReqFlightAvailability msgRefFlightAva = new msgReqFlightAvailability();
     
@@ -114,12 +114,23 @@ public class FlightAgent extends Agent{
                       if ("JavaSerialization".equals(msg.getLanguage())) {
                           msgReqFlightAvailability request = (msgReqFlightAvailability)msg.getContentObject();
                           
-                          msgFlightAvailability_Result_List flightRequestResult = flightAvaList.getFlightsAccordingToSpecs(request);
+                          msgFlightAvailability_Result_List flightRequestResult = new msgFlightAvailability_Result_List();
+                          
+                          try{
+                              flightRequestResult = flightAvaList.getFlightsAccordingToSpecs(request);
+                          }
+                          catch(Exception ex){
+                              
+                          }
+                          
+                          //if(flightRequestResult.)
                           
                           try{
                               //please refer to \jade_example\src\examples\Base64
                               MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.PROPOSE);
+                              
                               ACLMessage reply = myAgent.receive(mt);
+                              reply.addReceiver(msg.getSender());
                               reply.setContentObject(flightRequestResult);
                               reply.setLanguage("JavaSerialization");
 
