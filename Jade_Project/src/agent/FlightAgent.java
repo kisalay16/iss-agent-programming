@@ -113,6 +113,28 @@ public class FlightAgent extends Agent{
                     
                       if ("JavaSerialization".equals(msg.getLanguage())) {
                           msgReqFlightAvailability request = (msgReqFlightAvailability)msg.getContentObject();
+                          
+                          msgFlightAvailability_Result_List flightRequestResult = flightAvaList.getFlightsAccordingToSpecs(request);
+                          
+                          try{
+                              //please refer to \jade_example\src\examples\Base64
+                              MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.PROPOSE);
+                              ACLMessage reply = myAgent.receive(mt);
+                              reply.setContentObject(flightRequestResult);
+                              reply.setLanguage("JavaSerialization");
+
+                              reply.setDefaultEnvelope();
+                              reply.getEnvelope().setAclRepresentation(FIPANames.ACLCodec.BITEFFICIENT);
+                              send(reply);
+                              System.out.println(getLocalName()+" sent 1st msg with bit-efficient aclCodec "+ reply);
+
+                              reply.getEnvelope().setAclRepresentation(FIPANames.ACLCodec.XML); 
+                              send(reply);
+                              System.out.println(getLocalName()+" sent 1st msg with xml aclCodec "+ reply);
+                          }
+                          catch(Exception ex){
+                              JOptionPane.showMessageDialog(null, ex.getMessage());
+                          }
 
                       } else
                           System.out.println(getLocalName()+ " read Java String " + msg.getContent()); 
