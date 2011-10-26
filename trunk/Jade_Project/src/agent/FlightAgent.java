@@ -16,6 +16,7 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import java.io.IOException;
 import java.util.Date;
@@ -44,12 +45,28 @@ public class FlightAgent extends Agent{
     private msgReqFlightAvailability msgRefFlightAva = new msgReqFlightAvailability();
     
     protected void setup() {
-       System.out.println("Flight Agent Ready"); 
-        
-       //set up the flights available for booking
-       flightAvaList.addFlight(new msgFlightAvailability_Result("SIA", "Flight001", new Date(2011, 6, 11, 20, 30), new Date(2011, 6, 12, 7, 20), 1500.00, "Singapore", "London"));
-       flightAvaList.addFlight(new msgFlightAvailability_Result("Qantas", "Flight002", new Date(2011, 6, 20, 8, 30), new Date(2011, 6, 21, 10, 35), 2000.00, "London", "Singapore"));
-       
+
+        /** Registration with the DF */
+          DFAgentDescription dfd = new DFAgentDescription();    
+          ServiceDescription sd = new ServiceDescription();
+          sd.setType("FlightAgent"); 
+          sd.setName(getName());
+          sd.setOwnership("ISS-Jade-Example");
+          dfd.addServices(sd);
+          dfd.setName(getAID());
+          try {
+                DFService.register(this,dfd);
+          } catch (FIPAException e) {
+                System.err.println(getLocalName()+" registration with DF unsucceeded. Reason: "+e.getMessage());
+                doDelete();
+          }
+          
+          /** End registration with the DF **/
+          System.out.println(getLocalName()+ " succeeded in registration with DF");
+
+
+        // Add the behaviour serving queries from buyer agents
+        //addBehaviour(new OfferFlightRequestsServer());
     }
     
     // Put agent clean-up operations here
@@ -61,10 +78,8 @@ public class FlightAgent extends Agent{
         catch (FIPAException fe) {
             fe.printStackTrace();
         }
-        // Close the GUI
-        travelGUI.dispose();
         // Printout a dismissal message
-        System.out.println("Flight-Agent "+getAID().getName()+" terminating.");
+        System.out.println("flight-agent "+getAID().getName()+" terminating.");
     }
     
     public void setMsgFlightAva(msgReqFlightAvailability input){
@@ -81,7 +96,8 @@ public class FlightAgent extends Agent{
         */
     private class OfferFlightRequestsServer extends CyclicBehaviour {
         public void action() {
-            ACLMessage msg = myAgent.receive();
+            MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.CFP);
+            ACLMessage msg = myAgent.receive(mt);
             if (msg != null) {
                 try {
                     // Message received. Process it
@@ -89,42 +105,12 @@ public class FlightAgent extends Agent{
                 } catch (UnreadableException ex) {
                     Logger.getLogger(FlightAgent.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                ACLMessage reply = msg.createReply();
-                //get all available flights according requirement
-                msgFlightAvailability_Result_List flightResult = flightAvaList.getFlightsAccordingToSpecs(msgRefFlightAva);
-                
-                if(flightResult.getSize() == 0){
-                    // The requested book is NOT available for sale.
-                    reply.setPerformative(ACLMessage.REFUSE);
-                    reply.setContent("not-available");
-                }
-                else{
-                    // The requested book is available for sale. Reply with the price
-                    reply.setPerformative(ACLMessage.PROPOSE);
-                    
-                    try{
-                        msg.setContentObject(flightResult);
-                        msg.setLanguage("JavaSerialization");
-                        
-                        msg.setDefaultEnvelope();
-                        msg.getEnvelope().setAclRepresentation(FIPANames.ACLCodec.BITEFFICIENT);
-                        send(msg);
-                        System.out.println(getLocalName()+" sent 1st msg with bit-efficient aclCodec "+ msg);
-
-                        msg.getEnvelope().setAclRepresentation(FIPANames.ACLCodec.XML); 
-                        send(msg);
-                        System.out.println(getLocalName()+" sent 1st msg with xml aclCodec "+ msg);
-                    }
-                    catch(IOException ex){
-                        return;
-                    }
-                }
-               
-                myAgent.send(reply);
+            }
+            else {
+                block();
             }
         }
-    } // End of inner class OfferRequestsServer
-    
+    }
     
     
 }
