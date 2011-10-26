@@ -115,41 +115,65 @@ public class TravelAgent extends Agent{
         }
         
         public void action() {
-            
-              // Send the cfp to all sellers
-              ACLMessage cfp = new ACLMessage(ACLMessage.CFP);
+            switch(step){
+                case 0: 
+                      // Send the cfp to all sellers
+                      ACLMessage cfp = new ACLMessage(ACLMessage.CFP);
 
-              cfp.addReceiver(reader);
+                      cfp.addReceiver(reader);
 
-              try{
-                  //please refer to \jade_example\src\examples\Base64
-                  MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.CFP);
-                  ACLMessage msg = myAgent.receive(mt);
-                  cfp.setContentObject(flight);
-                  cfp.setLanguage("JavaSerialization");
+                      try{
+                          //please refer to \jade_example\src\examples\Base64
+                          MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.CFP);
+                          ACLMessage msg = myAgent.receive(mt);
+                          cfp.setContentObject(flight);
+                          cfp.setLanguage("JavaSerialization");
 
-                  cfp.setDefaultEnvelope();
-                  cfp.getEnvelope().setAclRepresentation(FIPANames.ACLCodec.BITEFFICIENT);
-                  send(cfp);
-                  System.out.println(getLocalName()+" sent 1st msg with bit-efficient aclCodec "+ cfp);
+                          cfp.setDefaultEnvelope();
+                          cfp.getEnvelope().setAclRepresentation(FIPANames.ACLCodec.BITEFFICIENT);
+                          send(cfp);
+                          System.out.println(getLocalName()+" sent 1st msg with bit-efficient aclCodec "+ cfp);
 
-                  cfp.getEnvelope().setAclRepresentation(FIPANames.ACLCodec.XML); 
-                  send(cfp);
-                  System.out.println(getLocalName()+" sent 1st msg with xml aclCodec "+ cfp);
-              }
-              catch(IOException ex){
-                  travelGUI.notifyUser(ex.getMessage());
-                  return;
-              }
+                          cfp.getEnvelope().setAclRepresentation(FIPANames.ACLCodec.XML); 
+                          send(cfp);
+                          System.out.println(getLocalName()+" sent 1st msg with xml aclCodec "+ cfp);
+                      }
+                      catch(IOException ex){
+                          travelGUI.notifyUser(ex.getMessage());
+                          return;
+                      }
 
-              cfp.setConversationId("flight-trade");
-              cfp.setReplyWith("cfp" + System.currentTimeMillis()); // Unique value
-              send(cfp);
+                      cfp.setConversationId("flight-trade");
+                      cfp.setReplyWith("cfp" + System.currentTimeMillis()); // Unique value
+                      send(cfp);
 
-              // Prepare the template to get proposals
-              mt = MessageTemplate.and(
-                MessageTemplate.MatchConversationId("flight-trade"),
-                MessageTemplate.MatchInReplyTo(cfp.getReplyWith()));
+                      // Prepare the template to get proposals
+                      mt = MessageTemplate.and(
+                        MessageTemplate.MatchConversationId("flight-trade"),
+                        MessageTemplate.MatchInReplyTo(cfp.getReplyWith()));
+                        step = 1; //waiting for reply
+                      break;
+                case 1:
+                    // Receive all proposals/refusals from seller agents
+                    ACLMessage reply = myAgent.receive(mt);
+                    if (reply != null) {
+                        // Reply received
+                        if (reply.getPerformative() == ACLMessage.PROPOSE) {
+                            if ("JavaSerialization".equals(reply.getLanguage())) {
+                        try {
+                            msgFlightAvailability_Result_List avaFlightList = (msgFlightAvailability_Result_List)reply.getContentObject();
+                        } catch (UnreadableException ex) {
+                            Logger.getLogger(TravelAgent.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                          
+                            
+                        }
+                    }
+                    else {
+                            block();
+                    }
+                    break;
+            } 
                      
         }
     } // End of inner class OfferRequestsServer
