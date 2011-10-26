@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import message.msgFlightAvailability_Result;
 import message.msgFlightAvailability_Result_List;
 import message.msgReqFlightAvailability;
@@ -50,6 +51,10 @@ public class TravelAgent extends Agent{
     
     protected void setup() {
         /** Search with the DF for the name of the ObjectReaderAgent **/
+          // Create and show the GUI 
+          travelGUI = new TravelAgentGUI(this);
+          travelGUI.showGUI();
+        
           AID flightAgentAID = new AID();
           DFAgentDescription dfd = new DFAgentDescription();  
           ServiceDescription sd = new ServiceDescription();
@@ -66,7 +71,7 @@ public class TravelAgent extends Agent{
                 flightAgentAID = dfd.getName();
                 break;
               }
-              Thread.sleep(10000);
+              Thread.sleep(1000);
             }
           } catch (Exception fe) {
               fe.printStackTrace();
@@ -75,12 +80,6 @@ public class TravelAgent extends Agent{
           }
         
         this.flight = new msgReqFlightAvailability();
-        
-        // Create and show the GUI 
-        travelGUI = new TravelAgentGUI(this);
-        travelGUI.showGUI();
-        
-        addBehaviour(new RequestFlightDetails(flight));
         
     }
     
@@ -97,7 +96,11 @@ public class TravelAgent extends Agent{
     
     public void getFlightDetails(msgReqFlightAvailability input){
         //add new behaviour
-        flight = new msgReqFlightAvailability(input);
+        try{
+            addBehaviour(new RequestFlightDetails(input));
+        }catch(Exception ex){
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
     }
     
     private class RequestFlightDetails extends CyclicBehaviour {
