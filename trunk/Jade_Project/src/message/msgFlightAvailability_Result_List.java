@@ -6,13 +6,14 @@ package message;
 
 import jade.util.leap.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author henry
  */
 public class msgFlightAvailability_Result_List implements Serializable{
-    private ArrayList<msgFlightAvailability_Result> flightResultList = new ArrayList<msgFlightAvailability_Result>();
+    private ArrayList flightResultList = new ArrayList();
     
     public msgFlightAvailability_Result_List(){
         flightResultList = new ArrayList<msgFlightAvailability_Result>();
@@ -25,7 +26,7 @@ public class msgFlightAvailability_Result_List implements Serializable{
     
     //to get a particular flight detail
     public msgFlightAvailability_Result getByIndex(Integer i){
-        return flightResultList.get(i);
+        return  (msgFlightAvailability_Result)flightResultList.get(i);
     }
     
     //to get all flights that suit the criteria
@@ -36,14 +37,14 @@ public class msgFlightAvailability_Result_List implements Serializable{
         for(int i = 0; i < flightResultList.size(); i++){
             //get all available flights to the destination
             //orgin -> des
-            if(flightResultList.get(i).getDeparture_City().compareTo(input.getOrigin_City()) == 0 && flightResultList.get(i).getDestination_City().compareTo(input.getOrigin_City()) == 0 && flightResultList.get(i).getDepartureDate().equals(input.getOnWard_Date())){
-                result.addFlight(flightResultList.get(i));
+            if(getByIndex(i).getDeparture_City().compareTo(input.getOrigin_City()) == 0 && getByIndex(i).getDestination_City().compareTo(input.getDestination_City()) == 0 && getByIndex(i).getAirFareTotal() <= input.getBudget()){
+                result.addFlight(getByIndex(i));
             }
             
             //get all available flights to the destination
             //des -> origin
-            if(flightResultList.get(i).getDeparture_City().compareTo(input.getDestination_City()) == 0 && flightResultList.get(i).getDestination_City().compareTo(input.getOrigin_City()) == 0 && flightResultList.get(i).getDepartureDate().equals(input.getOnWard_Date())){
-                result.addFlight(flightResultList.get(i));
+            if(getByIndex(i).getDeparture_City().compareTo(input.getDestination_City()) == 0 && getByIndex(i).getDestination_City().compareTo(input.getOrigin_City()) == 0 && getByIndex(i).getAirFareTotal() <= input.getBudget()){
+                result.addFlight(getByIndex(i));
             }
         }
                 
