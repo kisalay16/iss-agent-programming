@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author henry
  */
-public class msgFlightAvailability_Result implements Serializable {
+public final class msgFlightAvailability_Result implements Serializable {
     
     //default constructor
     public msgFlightAvailability_Result(){

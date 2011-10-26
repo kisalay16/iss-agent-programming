@@ -8,9 +8,11 @@ import GUI.TravelAgentGUI;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
+import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.SearchConstraints;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import jade.domain.FIPANames;
@@ -22,7 +24,6 @@ import java.util.Date;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 import message.msgFlightAvailability_Result;
 import message.msgFlightAvailability_Result_List;
 import message.msgReqFlightAvailability;
@@ -48,17 +49,39 @@ public class TravelAgent extends Agent{
     private msgReqFlightAvailability msgRefFlightAva = new msgReqFlightAvailability();
     
     protected void setup() {
-        // Printout a welcome message
-        System.out.println("Travel-Agent "+ getAID().getName()+" is ready.");
-     
+        /** Search with the DF for the name of the ObjectReaderAgent **/
+          AID flightAgentAID = new AID();
+          DFAgentDescription dfd = new DFAgentDescription();  
+          ServiceDescription sd = new ServiceDescription();
+          sd.setType("TravelAgent"); 
+          dfd.addServices(sd);
+          try {
+            while (true) {
+              System.out.println(getLocalName()+ " waiting for an FlightAgent registering with the DF");
+              SearchConstraints c = new SearchConstraints();
+              c.setMaxDepth(new Long(3));
+              DFAgentDescription[] result = DFService.search(this,dfd,c);
+              if ((result != null) && (result.length > 0)) {
+                dfd = result[0]; 
+                flightAgentAID = dfd.getName();
+                break;
+              }
+              Thread.sleep(10000);
+            }
+          } catch (Exception fe) {
+              fe.printStackTrace();
+              System.err.println(getLocalName()+" search with DF is not succeeded because of " + fe.getMessage());
+              doDelete();
+          }
+        
         this.flight = new msgReqFlightAvailability();
         
         // Create and show the GUI 
         travelGUI = new TravelAgentGUI(this);
         travelGUI.showGUI();
         
-        //add new behaviour
-        addBehaviour(new FlightNegotiator());
+        addBehaviour(new RequestFlightDetails(flight));
+        
     }
     
     protected void takeDown() {
@@ -73,36 +96,23 @@ public class TravelAgent extends Agent{
     
     
     public void getFlightDetails(msgReqFlightAvailability input){
-        this.flight = new msgReqFlightAvailability(input);
+        //add new behaviour
+        flight = new msgReqFlightAvailability(input);
     }
     
-    private class FlightNegotiator extends Behaviour {
-        private String title;
-        private int maxPrice;
-        private AID bestSeller; // The seller agent who provides the best offer
-        private int bestPrice; // The best offered price
-        private int repliesCnt = 0; // The counter of replies from seller agents
+    private class RequestFlightDetails extends CyclicBehaviour {
         private MessageTemplate mt; // The template to receive replies
-        private int step = 0;
-
-        public FlightNegotiator(){
-            flight = new msgReqFlightAvailability();
-        }
         
-        public FlightNegotiator(msgReqFlightAvailability input){
+        public RequestFlightDetails(msgReqFlightAvailability input){
             flight = new msgReqFlightAvailability(input);
         }
         
         public void action() {
-          switch (step) {
-          //done  
-          case 0:
               // Send the cfp to all sellers
               ACLMessage cfp = new ACLMessage(ACLMessage.CFP);
               for (int i = 0; i < flightAgentList.size(); ++i) {
                 cfp.addReceiver((AID)flightAgentList.elementAt(i));
               }
-
 
               try{
                   //please refer to \jade_example\src\examples\Base64
@@ -126,71 +136,12 @@ public class TravelAgent extends Agent{
               cfp.setConversationId("flight-trade");
               cfp.setReplyWith("cfp" + System.currentTimeMillis()); // Unique value
               send(cfp);
-              travelGUI.notifyUser("Sent Call for Flight Proposal");
 
               // Prepare the template to get proposals
               mt = MessageTemplate.and(
-              MessageTemplate.MatchConversationId("flight-trade"),
-              MessageTemplate.MatchInReplyTo(cfp.getReplyWith()));
-              step = 1;
-              break;
-            //done
-            case 1:
-              // Receive all proposals/refusals from seller agents
-              ACLMessage reply = myAgent.receive(mt);
-              //make sure there is an reply
-              if (reply != null) {
-                // Reply received
-                if (reply.getPerformative() == ACLMessage.PROPOSE) {
-                      try {
-                          // list of available flights
-                          msgFlightAvailability_Result_List avaFlights = (msgFlightAvailability_Result_List) reply.getContentObject();
-                      } catch (UnreadableException ex) {
-                         Logger.getLogger(TravelAgent.class.getName()).log(Level.SEVERE, null, ex);
-                      }
-                      travelGUI.notifyUser("Received available flight listing");
-                }
-                repliesCnt++;
-                if (repliesCnt >= flightAgentList.size()) {
-                  // We received all replies
-                  step = 2;
-                }
-              }
-              else {
-                block();
-              }
-              break;
-            //to do
-            case 2:
-              if (bestSeller != null && bestPrice <= maxPrice) {
-                // Send the purchase order to the seller that provided the best offer
-                ACLMessage order = new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
-                order.addReceiver(bestSeller);
-                order.setContent(title);
-                order.setConversationId("book-trade");
-                order.setReplyWith("order"+System.currentTimeMillis());
-                myAgent.send(order);
-                travelGUI.notifyUser("sent Accept Proposal");
-                // Prepare the template to get the purchase order reply
-                mt = MessageTemplate.and(
-                  MessageTemplate.MatchConversationId("book-trade"),
-                  MessageTemplate.MatchInReplyTo(order.getReplyWith()));
-                step = 3;
-              }
-              else {
-                // If we received no acceptable proposals, terminate
-                step = 4;
-              }
-              break;
-            //to do
-            case 3:
-              
-              break;
-          } // end of switch
+                MessageTemplate.MatchConversationId("flight-trade"),
+                MessageTemplate.MatchInReplyTo(cfp.getReplyWith()));
         }
-
-        public boolean done() {
-          return step == 4;
-        }
-      } // End of inner class BookNegotiator
+    } // End of inner class OfferRequestsServer
+    
 }
