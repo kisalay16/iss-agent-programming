@@ -95,15 +95,19 @@ public class FlightAgent extends Agent{
         */
     private class OfferFlightRequestsServer extends CyclicBehaviour {
         public void action() {
-            MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.CFP);
-            ACLMessage msg = myAgent.receive(mt);
-            if (msg != null) {
-                try {
-                    // Message received. Process it
-                    msgReqFlightAvailability req = (msgReqFlightAvailability) msg.getContentObject();
-                } catch (UnreadableException ex) {
-                    Logger.getLogger(FlightAgent.class.getName()).log(Level.SEVERE, null, ex);
-                }
+            try {
+                System.out.println(getLocalName()+" is waiting for a message");
+                ACLMessage msg = blockingReceive(); 
+                System.out.println(getLocalName()+ " rx msg"+msg); 
+      
+              if ("JavaSerialization".equals(msg.getLanguage())) {
+                  msgReqFlightAvailability p = (msgReqFlightAvailability)msg.getContentObject();
+                  System.out.println(getLocalName()+ " read Java Object " + p.getClass().getName() + p.toString());
+              } else
+                  System.out.println(getLocalName()+ " read Java String " + msg.getContent()); 
+
+            } catch(UnreadableException e3){
+                  System.err.println(getLocalName()+ " catched exception "+e3.getMessage());
             }
         }
     }
