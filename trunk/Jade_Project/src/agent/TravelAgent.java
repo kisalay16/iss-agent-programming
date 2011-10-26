@@ -121,6 +121,8 @@ public class TravelAgent extends Agent{
               
               try{
                   //please refer to \jade_example\src\examples\Base64
+                  MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.CFP);
+                  ACLMessage msg = myAgent.receive(mt);
                   cfp.setContentObject(flight);
                   cfp.setLanguage("JavaSerialization");
 

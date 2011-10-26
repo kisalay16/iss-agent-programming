@@ -94,18 +94,22 @@ public class FlightAgent extends Agent{
         sent back.
         */
     private class OfferFlightRequestsServer extends CyclicBehaviour {
+        private int step = 0;
+        
         public void action() {
             try {
                 System.out.println(getLocalName()+" is waiting for a message");
                 ACLMessage msg = blockingReceive(); 
                 System.out.println(getLocalName()+ " rx msg"+msg); 
       
-              if ("JavaSerialization".equals(msg.getLanguage())) {
-                  msgReqFlightAvailability p = (msgReqFlightAvailability)msg.getContentObject();
-                  System.out.println(getLocalName()+ " read Java Object " + p.getClass().getName() + p.toString());
-              } else
-                  System.out.println(getLocalName()+ " read Java String " + msg.getContent()); 
+                if(msg.getPerformative() == ACLMessage.CFP){
+                    
+                      if ("JavaSerialization".equals(msg.getLanguage())) {
+                          msgReqFlightAvailability request = (msgReqFlightAvailability)msg.getContentObject();
 
+                      } else
+                          System.out.println(getLocalName()+ " read Java String " + msg.getContent()); 
+                }
             } catch(UnreadableException e3){
                   System.err.println(getLocalName()+ " catched exception "+e3.getMessage());
             }
