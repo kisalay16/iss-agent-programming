@@ -50,36 +50,37 @@ public class TravelAgent extends Agent{
     private msgReqFlightAvailability msgRefFlightAva = new msgReqFlightAvailability();
     
     protected void setup() {
-        /** Search with the DF for the name of the ObjectReaderAgent **/
-          // Create and show the GUI 
           travelGUI = new TravelAgentGUI(this);
           travelGUI.showGUI();
-        
-          AID flightAgentAID = new AID();
+          /** Search with the DF for the name of the ObjectReaderAgent **/
+          AID reader = new AID();
           DFAgentDescription dfd = new DFAgentDescription();  
           ServiceDescription sd = new ServiceDescription();
-          sd.setType("TravelAgent"); 
+          sd.setType("ObjectReaderAgent"); 
           dfd.addServices(sd);
           try {
             while (true) {
-              System.out.println(getLocalName()+ " waiting for an FlightAgent registering with the DF");
+              System.out.println(getLocalName()+ " waiting for an ObjectReaderAgent registering with the DF");
               SearchConstraints c = new SearchConstraints();
               c.setMaxDepth(new Long(3));
               DFAgentDescription[] result = DFService.search(this,dfd,c);
               if ((result != null) && (result.length > 0)) {
                 dfd = result[0]; 
-                flightAgentAID = dfd.getName();
+                reader = dfd.getName();
                 break;
               }
-              Thread.sleep(1000);
+              Thread.sleep(10000);
             }
           } catch (Exception fe) {
               fe.printStackTrace();
               System.err.println(getLocalName()+" search with DF is not succeeded because of " + fe.getMessage());
               doDelete();
           }
+
+          System.out.println(getLocalName()+" agent sends ACLMessages whose content is a Java object");
+
         
-        this.flight = new msgReqFlightAvailability();
+          this.flight = new msgReqFlightAvailability();
         
     }
     
