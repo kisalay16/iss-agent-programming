@@ -46,27 +46,26 @@ public class FlightAgent extends Agent{
     
     protected void setup() {
 
-        /** Registration with the DF */
+          /** Registration with the DF */
           DFAgentDescription dfd = new DFAgentDescription();    
           ServiceDescription sd = new ServiceDescription();
-          sd.setType("FlightAgent"); 
+          sd.setType("ObjectReaderAgent"); 
           sd.setName(getName());
-          sd.setOwnership("ISS-Jade-Example");
+          sd.setOwnership("ExampleOfJADE");
           dfd.addServices(sd);
           dfd.setName(getAID());
           try {
-                DFService.register(this,dfd);
+            DFService.register(this,dfd);
           } catch (FIPAException e) {
-                System.err.println(getLocalName()+" registration with DF unsucceeded. Reason: "+e.getMessage());
-                doDelete();
+            System.err.println(getLocalName()+" registration with DF unsucceeded. Reason: "+e.getMessage());
+            doDelete();
           }
-          
           /** End registration with the DF **/
           System.out.println(getLocalName()+ " succeeded in registration with DF");
 
 
         // Add the behaviour serving queries from buyer agents
-        //addBehaviour(new OfferFlightRequestsServer());
+        addBehaviour(new OfferFlightRequestsServer());
     }
     
     // Put agent clean-up operations here
