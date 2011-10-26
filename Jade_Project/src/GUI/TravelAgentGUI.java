@@ -210,8 +210,6 @@ public class TravelAgentGUI extends javax.swing.JFrame {
         reqFlightAva.setNo_Of_Traveller(Integer.valueOf(txtNo_Of_Passengers.getText()));
         reqFlightAva.setBudget(Integer.valueOf(txtBudget.getText()));
         
-        travelA = new TravelAgent();
-        
         travelA.getFlightDetails(reqFlightAva);
         
         //currently for events, 1 = getFlightAvailability
