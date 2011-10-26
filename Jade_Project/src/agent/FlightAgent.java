@@ -45,7 +45,7 @@ public class FlightAgent extends Agent{
     private msgReqFlightAvailability msgRefFlightAva = new msgReqFlightAvailability();
     
     protected void setup() {
-
+          
           //set up the flightAva List
           msgFlightAvailability_Result a = new msgFlightAvailability_Result("SIA", "SIA001", new Date(2011, 11, 1, 11, 20), new Date(2011, 11, 2, 8, 30), 2000.00, "Singapore", "London");
           msgFlightAvailability_Result b = new msgFlightAvailability_Result("SIA", "SIA002", new Date(2011, 11, 10, 11, 20), new Date(2011, 11, 11, 8, 30), 1500.00, "London", "Singapore");
@@ -126,13 +126,14 @@ public class FlightAgent extends Agent{
                           //if(flightRequestResult.)
                           
                           try{
-                              //please refer to \jade_example\src\examples\Base64
-                              MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.PROPOSE);
-                              
-                              ACLMessage reply = myAgent.receive(mt);
+                              ACLMessage reply = new ACLMessage(ACLMessage.PROPOSE);
+
                               reply.addReceiver(msg.getSender());
+
                               reply.setContentObject(flightRequestResult);
                               reply.setLanguage("JavaSerialization");
+                              send(reply);
+                              System.out.println(getLocalName()+" sent 1st msg "+msg);
 
                               reply.setDefaultEnvelope();
                               reply.getEnvelope().setAclRepresentation(FIPANames.ACLCodec.BITEFFICIENT);
