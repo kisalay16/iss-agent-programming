@@ -163,6 +163,9 @@ public class TravelAgent extends Agent{
                          try{
                               flightAvaResult = new msgFlightAvailability_Result_List();
                               flightAvaResult = (msgFlightAvailability_Result_List)msgAvaResult.getContentObject();
+                              
+                              travelGUI.displayAvaFlights(flightAvaResult);
+                           
                              
                          } catch (UnreadableException ex) {
                              Logger.getLogger(TravelAgent.class.getName()).log(Level.SEVERE, null, ex);
