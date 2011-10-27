@@ -105,7 +105,7 @@ public class FlightAgent extends Agent{
         
         public void action() {
             try {
-                System.out.println(getLocalName()+" is waiting for a message");
+                System.out.println(getLocalName()+" is waiting for a booking");
                 ACLMessage msg = blockingReceive(); 
                 System.out.println(getLocalName()+ " rx msg"+msg); 
       
@@ -158,5 +158,42 @@ public class FlightAgent extends Agent{
         }
     }
     
-    
+    private class BookFlightRequestsServer extends CyclicBehaviour {
+        private String sFlightNo;
+        private AID targetAgentAID;
+        private Integer step = 0;
+        private MessageTemplate mt;
+        
+        public BookFlightRequestsServer(String flightNo, AID agentAID){
+            sFlightNo = flightNo;
+            targetAgentAID = agentAID;
+        }
+        
+        public void action() {
+              switch(step){
+                  case 0:   
+                      if (sFlightNo != null) {
+                        ACLMessage order = new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
+                        order.addReceiver(targetAgentAID);
+                        order.setContent(sFlightNo);
+                        order.setConversationId("flight-trade");
+                        order.setReplyWith("order"+System.currentTimeMillis());
+                        myAgent.send(order);
+                        // Prepare the template to get the purchase order reply
+                        mt = MessageTemplate.and(MessageTemplate.MatchConversationId("book-trade"), MessageTemplate.MatchInReplyTo(order.getReplyWith()));
+                        step = 3;
+                        }
+                    else {
+                        // If we received no acceptable proposals, terminate
+                        step = 1;
+                    }
+                    break;
+                    
+                  case 1:
+                      
+                  break;
+                    
+            }
+        }
+    }  // End of inner class OfferRequestsServer
 }
