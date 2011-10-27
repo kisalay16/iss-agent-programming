@@ -47,7 +47,9 @@ public class TravelAgent extends Agent{
     
     // The list of known flight agents
     private Vector flightAgentList = new Vector();
-    AID reader = new AID();
+    private AID reader = new AID();
+    private AID selectedAID;
+    
     
     
     private msgReqFlightAvailability msgRefFlightAva = new msgReqFlightAvailability();
@@ -97,7 +99,7 @@ public class TravelAgent extends Agent{
         System.out.println("Buyer-agent "+ getAID().getName()+ "terminated.");
     }
     
-    
+    //to request for flight retails based on req.
     public void getFlightDetails(msgReqFlightAvailability input){
         //add new behaviour
         try{
@@ -106,6 +108,18 @@ public class TravelAgent extends Agent{
             JOptionPane.showMessageDialog(null, reader);
         }
     }
+    
+    //to request for flight retails based on req.
+    public void bookFlight(String flightNo, AID selectedAID){
+        //add new behaviour
+        try{
+            addBehaviour(new BookFlight(flightNo, selectedAID));
+        }catch(Exception ex){
+            JOptionPane.showMessageDialog(null, reader);
+        }
+    }
+    
+    
     
     private class RequestFlightDetails extends CyclicBehaviour {
         private MessageTemplate mt; // The template to receive replies
@@ -158,7 +172,9 @@ public class TravelAgent extends Agent{
                     ACLMessage msgAvaResult = blockingReceive(); 
                     
                     if(msgAvaResult.getPerformative() == ACLMessage.PROPOSE){
-                    
+                      
+                      selectedAID = new AID();
+                      selectedAID = msgAvaResult.getSender();  //hardcode for the time being
                       if ("JavaSerialization".equals(msgAvaResult.getLanguage())) {
                          try{
                               flightAvaResult = new msgFlightAvailability_Result_List();
@@ -180,4 +196,45 @@ public class TravelAgent extends Agent{
         }
     } // End of inner class OfferRequestsServer
     
+    
+    private class BookFlight extends CyclicBehaviour {
+        private String sFlightNo;
+        private MessageTemplate mt; // The template to receive replies
+        int step = 0;
+        AID selectedFlightAgentID;
+        
+        public BookFlight(String flightNo, AID id){
+            sFlightNo = flightNo;
+            selectedFlightAgentID = id;
+        }
+        
+        public void action() {
+            switch(step){
+                case 0: 
+                      // Send the cfp to all sellers
+                      ACLMessage cfp = new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
+
+                      cfp.addReplyTo(selectedAID); //hardcoded for the time being
+                      //cfp.addReplyTo(selectedFlightAgentID);
+                      
+                      //please refer to \jade_example\src\examples\Base64
+                      MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.ACCEPT_PROPOSAL);
+                      ACLMessage msg = myAgent.receive(mt);
+                      //cfp.setContent(sFlightNo);
+                      cfp.setContent("SIA001");
+                      cfp.setConversationId("flight-trade");
+                      cfp.setReplyWith("cfp"+System.currentTimeMillis()); // Unique value
+                      myAgent.send(cfp);
+                      // Prepare the template to get proposals
+                      mt = MessageTemplate.and(MessageTemplate.MatchConversationId("book-trade"),
+                                        MessageTemplate.MatchInReplyTo(cfp.getReplyWith()));
+                        step = 1; //waiting for reply
+                      break;
+                case 1:
+                    
+                  break;    
+            } 
+                     
+        }
+    } // End of inner class OfferRequestsServer
 }
