@@ -100,7 +100,7 @@ public class FlightAgent extends Agent{
         with a PROPOSE message specifying the price. Otherwise a REFUSE message is
         sent back.
         */
-    private class OfferFlightRequestsServer extends CyclicBehaviour {
+    private class OfferFlightRequestsServer extends OneShotBehaviour {
         private int step = 0;
         
         public void action() {
