@@ -5,15 +5,16 @@ import Agent.TravelAgent;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Stack;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import message.msgFlightAvailability_Result_List;
 import message.msgReqFlightAvailability;
 import org.jdesktop.application.Action;
-import sun.security.x509.AttributeNameEnumeration;
 
 /*
  * To change this template, choose Tools | Templates
@@ -282,24 +283,31 @@ public class TravelAgentGUI extends javax.swing.JFrame {
     }
     
     public void displayAvaFlights(msgFlightAvailability_Result_List input){
-        String[] header = { "Airline", "FlightNo", "Departure City", "Departure Date", "Arrival City", "Arrival Time"};
+        Vector<String> header = new Stack<String>();
         
-        Vector vheader = new Vector();
-        vheader.add(header);
-        Vector vcolList = new Vector();
+        header.add(null);
+        header.add("Airline");
+        header.add("FlightNo");
+        header.add("Departure City");
+        header.add("Departure Date");
+        header.add("Arrival City");
+        header.add("Arrival Date");
+
+        Vector<Vector<String>> vColList = new Vector<Vector<String>>();
 
         for(int i = 0; i < input.getSize(); i++){
-            Vector col = new Vector();
-            col.add(input.getByIndex(i).getAirliner());
+            Vector<String> col = new Vector<String>();
+            col.add(input.getByIndex(i).getAirliner()); 
             col.add(input.getByIndex(i).getFlightID());
             col.add(input.getByIndex(i).getDeparture_City());
             col.add(input.getByIndex(i).getDepartureDate().toString());
             col.add(input.getByIndex(i).getDestination_City());
             col.add(input.getByIndex(i).getArrivalDate().toString());
-            vcolList.add(col);
+            vColList.add(col);
         }
         
-        tblAvaFlights = new JTable(vcolList, vheader);
+        tblAvaFlights = new JTable(vColList, header);
+        
     }
         
     // Variables declaration - do not modify//GEN-BEGIN:variables
