@@ -163,7 +163,7 @@ public class TravelAgent extends Agent{
                          try{
                               flightAvaResult = new msgFlightAvailability_Result_List();
                               flightAvaResult = (msgFlightAvailability_Result_List)msgAvaResult.getContentObject();
-                              
+
                               travelGUI.displayAvaFlights(flightAvaResult);
                            
                              
@@ -172,9 +172,9 @@ public class TravelAgent extends Agent{
                          }
                     
                       }  
-                    
-                }
-                break;    
+                      step = 3; //don't accept anymore
+                  }
+                  break;    
             } 
                      
         }
