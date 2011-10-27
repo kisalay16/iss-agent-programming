@@ -120,7 +120,7 @@ public class FlightAgent extends Agent{
                               flightRequestResult = flightAvaList.getFlightsAccordingToSpecs(request);
                           }
                           catch(Exception ex){
-                              
+
                           }
                           
                           //if(flightRequestResult.)
