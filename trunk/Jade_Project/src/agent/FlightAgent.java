@@ -124,28 +124,29 @@ public class FlightAgent extends Agent{
                           }
                           
                           //if(flightRequestResult.)
-                          
-                          try{
-                              ACLMessage reply = new ACLMessage(ACLMessage.PROPOSE);
+                          if(flightRequestResult.getSize() > 0){
+                              try{
+                                  ACLMessage reply = new ACLMessage(ACLMessage.PROPOSE);
 
-                              reply.addReceiver(msg.getSender());
+                                  reply.addReceiver(msg.getSender());
 
-                              reply.setContentObject(flightRequestResult);
-                              reply.setLanguage("JavaSerialization");
-                              send(reply);
-                              System.out.println(getLocalName()+" sent 1st msg "+msg);
+                                  reply.setContentObject(flightRequestResult);
+                                  reply.setLanguage("JavaSerialization");
+                                  send(reply);
+                                  System.out.println(getLocalName()+" sent 1st msg "+msg);
 
-                              reply.setDefaultEnvelope();
-                              reply.getEnvelope().setAclRepresentation(FIPANames.ACLCodec.BITEFFICIENT);
-                              send(reply);
-                              System.out.println(getLocalName()+" sent 1st msg with bit-efficient aclCodec "+ reply);
+                                  reply.setDefaultEnvelope();
+                                  reply.getEnvelope().setAclRepresentation(FIPANames.ACLCodec.BITEFFICIENT);
+                                  send(reply);
+                                  System.out.println(getLocalName()+" sent 1st msg with bit-efficient aclCodec "+ reply);
 
-                              reply.getEnvelope().setAclRepresentation(FIPANames.ACLCodec.XML); 
-                              send(reply);
-                              System.out.println(getLocalName()+" sent 1st msg with xml aclCodec "+ reply);
-                          }
-                          catch(Exception ex){
-                              JOptionPane.showMessageDialog(null, ex.getMessage());
+                                  reply.getEnvelope().setAclRepresentation(FIPANames.ACLCodec.XML); 
+                                  send(reply);
+                                  System.out.println(getLocalName()+" sent 1st msg with xml aclCodec "+ reply);
+                              }
+                              catch(Exception ex){
+                                  JOptionPane.showMessageDialog(null, ex.getMessage());
+                              }
                           }
 
                       } else
