@@ -89,7 +89,7 @@ public final class msgFlightAvailability_Result implements Serializable {
     }
     
     private Boolean bIsTaken;  //to see if the flight is taken or not
-    public Boolean geIsTaken(){
+    public Boolean getIsTaken(){
         return this.bIsTaken;
     }
     public void setIsTaken(Boolean bValue){

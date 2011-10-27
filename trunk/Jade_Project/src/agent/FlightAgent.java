@@ -73,6 +73,9 @@ public class FlightAgent extends Agent{
 
         // Add the behaviour serving queries from buyer agents
         addBehaviour(new OfferFlightRequestsServer());
+        
+        // Add the behaviour serving queries from buyer agents
+        addBehaviour(new BookFlightRequestsServer());
     }
     
     // Put agent clean-up operations here
@@ -164,36 +167,26 @@ public class FlightAgent extends Agent{
         private Integer step = 0;
         private MessageTemplate mt;
         
-        public BookFlightRequestsServer(String flightNo, AID agentAID){
-            sFlightNo = flightNo;
-            targetAgentAID = agentAID;
-        }
-        
         public void action() {
-              switch(step){
-                  case 0:   
-                      if (sFlightNo != null) {
-                        ACLMessage order = new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
-                        order.addReceiver(targetAgentAID);
-                        order.setContent(sFlightNo);
-                        order.setConversationId("flight-trade");
-                        order.setReplyWith("order"+System.currentTimeMillis());
-                        myAgent.send(order);
-                        // Prepare the template to get the purchase order reply
-                        mt = MessageTemplate.and(MessageTemplate.MatchConversationId("book-trade"), MessageTemplate.MatchInReplyTo(order.getReplyWith()));
-                        step = 3;
-                        }
-                    else {
-                        // If we received no acceptable proposals, terminate
-                        step = 1;
+            System.out.println(getLocalName()+" is waiting for a booking");
+            ACLMessage msg = blockingReceive(); 
+            System.out.println(getLocalName()+ " rx msg"+msg); 
+
+            if(msg.getPerformative() == ACLMessage.ACCEPT_PROPOSAL){
+                String flightNo = msg.getContent();
+                ACLMessage bookingResult = msg.createReply();
+                if(flightNo != null){
+                    if(flightAvaList.checkIfFlightIsBooked(flightNo) == false){
+                        bookingResult.setPerformative(ACLMessage.REFUSE);
                     }
-                    break;
-                    
-                  case 1:
-                      
-                  break;
-                    
+                    else{
+                        bookingResult.setPerformative(ACLMessage.CONFIRM);
+                    }
+                }
+                send(bookingResult);
             }
+            
+                    
         }
     }  // End of inner class OfferRequestsServer
 }
