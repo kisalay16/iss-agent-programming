@@ -43,6 +43,7 @@ public class TravelAgent extends Agent{
     private ServiceDescription sd;
     
     private msgReqFlightAvailability flight;
+    private msgFlightAvailability_Result_List flightAvaResult;
     
     // The list of known flight agents
     private Vector flightAgentList = new Vector();
@@ -160,10 +161,11 @@ public class TravelAgent extends Agent{
                     
                       if ("JavaSerialization".equals(msgAvaResult.getLanguage())) {
                          try{
-                             msgFlightAvailability_Result_List flightAvaResult = (msgFlightAvailability_Result_List)msgAvaResult.getContentObject();
+                              flightAvaResult = new msgFlightAvailability_Result_List();
+                              flightAvaResult = (msgFlightAvailability_Result_List)msgAvaResult.getContentObject();
                              
                          } catch (UnreadableException ex) {
-                            Logger.getLogger(TravelAgent.class.getName()).log(Level.SEVERE, null, ex);
+                             Logger.getLogger(TravelAgent.class.getName()).log(Level.SEVERE, null, ex);
                          }
                     
                       }  
