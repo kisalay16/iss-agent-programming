@@ -21,7 +21,7 @@ public final class msgFlightAvailability_Result implements Serializable {
     }
    
     //default constructor
-    public msgFlightAvailability_Result(String airline, String flightno, Date departDate, Date arrivalDate, Double cost, String orgin_city, String des_city){
+    public msgFlightAvailability_Result(String airline, String flightno, Date departDate, Date arrivalDate, Double cost, String orgin_city, String des_city, Boolean isTaken){
         setAirliner(airline);
         setFlightID(flightno);
         setDepartureDate(departDate);
@@ -29,6 +29,7 @@ public final class msgFlightAvailability_Result implements Serializable {
         setAirFareTotal(cost);
         setDeparture_City(orgin_city);
         setDestination_City(des_city);
+        setIsTaken(isTaken);
     }
     
     String sAirliner;
@@ -85,6 +86,14 @@ public final class msgFlightAvailability_Result implements Serializable {
     }
     public void setDestination_City(String sValue){
         this.sDestination_City = sValue;
+    }
+    
+    private Boolean bIsTaken;  //to see if the flight is taken or not
+    public Boolean geIsTaken(){
+        return this.bIsTaken;
+    }
+    public void setIsTaken(Boolean bValue){
+        this.bIsTaken = bValue;
     }
     
 }

@@ -37,7 +37,7 @@ public class msgFlightAvailability_Result_List implements Serializable{
         for(int i = 0; i < flightResultList.size(); i++){
             //get all available flights to the destination
             //orgin -> des
-            if(getByIndex(i).getDeparture_City().compareTo(input.getOrigin_City()) == 0 && getByIndex(i).getDestination_City().compareTo(input.getDestination_City()) == 0 && getByIndex(i).getAirFareTotal() <= input.getBudget()){
+            if(getByIndex(i).getDeparture_City().compareTo(input.getOrigin_City()) == 0 && getByIndex(i).getDestination_City().compareTo(input.getDestination_City()) == 0 && getByIndex(i).getAirFareTotal() <= input.getBudget() && getByIndex(i).geIsTaken() == false){
                 result.addFlight(getByIndex(i));
             }
             
