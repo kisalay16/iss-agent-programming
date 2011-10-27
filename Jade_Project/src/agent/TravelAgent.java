@@ -154,25 +154,22 @@ public class TravelAgent extends Agent{
                         step = 1; //waiting for reply
                       break;
                 case 1:
-                    // Receive all proposals/refusals from seller agents
-                    ACLMessage reply = myAgent.receive(mt);
-                    if (reply != null) {
-                        // Reply received
-                        if (reply.getPerformative() == ACLMessage.PROPOSE) {
-                            if ("JavaSerialization".equals(reply.getLanguage())) {
-                        try {
-                            msgFlightAvailability_Result_List avaFlightList = (msgFlightAvailability_Result_List)reply.getContentObject();
-                        } catch (UnreadableException ex) {
+                    ACLMessage msgAvaResult = blockingReceive(); 
+                    
+                    if(msgAvaResult.getPerformative() == ACLMessage.PROPOSE){
+                    
+                      if ("JavaSerialization".equals(msgAvaResult.getLanguage())) {
+                         try{
+                             msgFlightAvailability_Result_List flightAvaResult = (msgFlightAvailability_Result_List)msgAvaResult.getContentObject();
+                             
+                         } catch (UnreadableException ex) {
                             Logger.getLogger(TravelAgent.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                          
-                            
-                        }
-                    }
-                    else {
-                            block();
-                    }
-                    break;
+                         }
+                    
+                      }  
+                    
+                }
+                break;    
             } 
                      
         }
