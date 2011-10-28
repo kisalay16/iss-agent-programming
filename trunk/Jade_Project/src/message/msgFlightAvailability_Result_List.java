@@ -15,6 +15,14 @@ import java.util.List;
 public class msgFlightAvailability_Result_List implements Serializable{
     private ArrayList flightResultList = new ArrayList();
     
+    private String sProposalID;
+    public void setProposalID(String input){
+        sProposalID = input;
+    }
+    public String getProposalID(){
+        return sProposalID;
+    }
+    
     public msgFlightAvailability_Result_List(){
         flightResultList = new ArrayList<msgFlightAvailability_Result>();
     }

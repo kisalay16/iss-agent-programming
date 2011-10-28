@@ -20,6 +20,7 @@ import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -43,6 +44,9 @@ public class FlightAgent extends Agent{
     private msgFlightAvailability_Result_List flightAvaList = new msgFlightAvailability_Result_List(); //to keep track of all the available flight list
     
     private msgReqFlightAvailability msgRefFlightAva = new msgReqFlightAvailability();
+    
+    private Vector requestIDList = new Vector();
+    private Integer requestRunningNo = 0;
     
     protected void setup() {
           
@@ -91,6 +95,11 @@ public class FlightAgent extends Agent{
         System.out.println("flight-agent "+getAID().getName()+" terminating.");
     }
     
+    private String generateRequestID(){
+        Integer temp = requestRunningNo + 1;
+        return "Request" + temp.toString();
+    }
+    
     public void setMsgFlightAva(msgReqFlightAvailability input){
         msgRefFlightAva = new msgReqFlightAvailability(input);
     }
@@ -121,6 +130,7 @@ public class FlightAgent extends Agent{
                           
                           try{
                               flightRequestResult = flightAvaList.getFlightsAccordingToSpecs(request);
+                              flightRequestResult.setProposalID(generateRequestID());
                           }
                           catch(Exception ex){
 
@@ -173,7 +183,15 @@ public class FlightAgent extends Agent{
             System.out.println(getLocalName()+ " rx msg"+msg); 
 
             if(msg.getPerformative() == ACLMessage.ACCEPT_PROPOSAL){
-                String flightNo = msg.getContent();
+                String requestID = msg.getContent();
+                //to simulate the searching
+                String flightNo = new String();
+                if(requestID.compareTo("Request1") == 0){
+                    flightNo = "SIA001";
+                }
+                if(requestID.compareTo("Request2") == 0){
+                    flightNo = "SIA002";
+                }
                 ACLMessage bookingResult = msg.createReply();
                 if(flightNo != null){
                     if(flightAvaList.bookFlight(flightNo) == false){
