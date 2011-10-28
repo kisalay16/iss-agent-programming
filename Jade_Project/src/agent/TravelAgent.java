@@ -224,8 +224,15 @@ public class TravelAgent extends Agent{
                     step = 1;
                     break;
                 case 1:
+                    ACLMessage msgAvaResult = blockingReceive(); 
                     
-                  break;    
+                    if(msgAvaResult.getPerformative() == ACLMessage.CONFIRM){
+                       travelGUI.notifyUser("Flight Confirm!!!");
+                    }
+                    else if(msgAvaResult.getPerformative() == ACLMessage.REFUSE){
+                       travelGUI.notifyUser("Flight Refused!!!");
+                    }
+                    break;    
             } 
                      
         }
