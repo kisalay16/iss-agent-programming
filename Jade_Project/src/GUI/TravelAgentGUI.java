@@ -323,7 +323,7 @@ public class TravelAgentGUI extends javax.swing.JFrame {
 
     @Action
     public void selectFlight() {
-        travelA.bookFlight("SIA010", new AID());
+        travelA.bookFlight("SIA001", new AID());
     }
         
     // Variables declaration - do not modify//GEN-BEGIN:variables
