@@ -228,11 +228,16 @@ public class TravelAgent extends Agent{
                     
                     if(msgAvaResult.getPerformative() == ACLMessage.CONFIRM){
                        travelGUI.notifyUser("Flight Confirm!!!");
+                       step = 0;
                     }
                     else if(msgAvaResult.getPerformative() == ACLMessage.REFUSE){
                        travelGUI.notifyUser("Flight Refused!!!");
+                       step = 0;
                     }
-                    step = 0;
+                    else{
+                        block();
+                    }
+                    
                     break;    
             } 
                      
