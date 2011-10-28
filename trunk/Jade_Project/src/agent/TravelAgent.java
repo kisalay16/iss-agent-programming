@@ -190,6 +190,10 @@ public class TravelAgent extends Agent{
                       }  
                       step = 3; //don't accept anymore
                   }
+                    else if(msgAvaResult.getPerformative() == ACLMessage.INFORM){
+                        String reply = msgAvaResult.getContent();
+                        travelGUI.notifyUser(reply);
+                    }
                   break;    
             } 
                      

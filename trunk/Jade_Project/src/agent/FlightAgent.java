@@ -162,6 +162,14 @@ public class FlightAgent extends Agent{
                                   JOptionPane.showMessageDialog(null, ex.getMessage());
                               }
                           }
+                          //if no such flight exists
+                          else{
+                              ACLMessage reply = new ACLMessage(ACLMessage.INFORM);
+                              reply.addReceiver(msg.getSender());
+                              reply.setLanguage("English");
+                              reply.setContent("No available flights");
+                              send(reply);
+                          }
 
                       } else
                           System.out.println(getLocalName()+ " read Java String " + msg.getContent()); 
