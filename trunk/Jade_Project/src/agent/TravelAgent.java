@@ -232,6 +232,7 @@ public class TravelAgent extends Agent{
                     else if(msgAvaResult.getPerformative() == ACLMessage.REFUSE){
                        travelGUI.notifyUser("Flight Refused!!!");
                     }
+                    step = 0;
                     break;    
             } 
                      
