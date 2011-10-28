@@ -176,6 +176,8 @@ public class FlightAgent extends Agent{
         private AID targetAgentAID;
         private Integer step = 0;
         private MessageTemplate mt;
+        private String processedRequests[]; //list to keep track of all the processedID
+        private Boolean toProceed;
         
         public void action() {
             System.out.println(getLocalName()+" is waiting for a booking");
@@ -184,24 +186,41 @@ public class FlightAgent extends Agent{
 
             if(msg.getPerformative() == ACLMessage.ACCEPT_PROPOSAL){
                 String requestID = msg.getContent();
-                //to simulate the searching
-                String flightNo = new String();
-                if(requestID.compareTo("Request1") == 0){
-                    flightNo = "SIA001";
-                }
-                if(requestID.compareTo("Request2") == 0){
-                    flightNo = "SIA002";
-                }
-                ACLMessage bookingResult = msg.createReply();
-                if(flightNo != null){
-                    if(flightAvaList.bookFlight(flightNo) == false){
-                        bookingResult.setPerformative(ACLMessage.REFUSE);
-                    }
-                    else{
-                        bookingResult.setPerformative(ACLMessage.CONFIRM);
+                toProceed = true;
+                
+                for(int i = 0; i < processedRequests.length; i++){
+                    //if previously processed, just inform
+                    if(processedRequests[i].compareTo(requestID) == 0){
+                        ACLMessage reply = new ACLMessage(ACLMessage.INFORM);
+                        reply.addReceiver(msg.getSender());
+                        reply.setLanguage("English");
+                        reply.setContent("Request already processed");
+                        send(reply);
+                        toProceed = false;
+                        break;
                     }
                 }
-                send(bookingResult);
+                        
+                if(toProceed == true){
+                    //to simulate the searching
+                    String flightNo = new String();
+                    if(requestID.compareTo("Request1") == 0){
+                        flightNo = "SIA001";
+                    }
+                    if(requestID.compareTo("Request2") == 0){
+                        flightNo = "SIA002";
+                    }
+                    ACLMessage bookingResult = msg.createReply();
+                    if(flightNo != null){
+                        if(flightAvaList.bookFlight(flightNo) == false){
+                            bookingResult.setPerformative(ACLMessage.REFUSE);
+                        }
+                        else{
+                            bookingResult.setPerformative(ACLMessage.CONFIRM);
+                        }
+                    }
+                    send(bookingResult);
+                }
             }
             
                     
