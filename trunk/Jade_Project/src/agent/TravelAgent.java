@@ -211,25 +211,18 @@ public class TravelAgent extends Agent{
         public void action() {
             switch(step){
                 case 0: 
-                      // Send the cfp to all sellers
-                      ACLMessage cfp = new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
-
-                      cfp.addReplyTo(selectedAID); //hardcoded for the time being
-                      //cfp.addReplyTo(selectedFlightAgentID);
-                      
-                      //please refer to \jade_example\src\examples\Base64
-                      MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.ACCEPT_PROPOSAL);
-                      ACLMessage msg = myAgent.receive(mt);
-                      //cfp.setContent(sFlightNo);
-                      cfp.setContent("SIA001");
-                      cfp.setConversationId("flight-trade");
-                      cfp.setReplyWith("cfp"+System.currentTimeMillis()); // Unique value
-                      myAgent.send(cfp);
-                      // Prepare the template to get proposals
-                      mt = MessageTemplate.and(MessageTemplate.MatchConversationId("book-trade"),
-                                        MessageTemplate.MatchInReplyTo(cfp.getReplyWith()));
-                        step = 1; //waiting for reply
-                      break;
+                    // Send the purchase order to the seller that provided the best offer
+                    ACLMessage order = new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
+                    order.addReceiver(selectedAID);
+                    order.setContent(sFlightNo);
+                    order.setConversationId("flight-trade");
+                    order.setReplyWith("order" +System.currentTimeMillis());
+                    myAgent.send(order);
+                    // Prepare the template to get the purchase order reply
+                    mt = MessageTemplate.and(MessageTemplate.MatchConversationId("book-trade"),
+                                    MessageTemplate.MatchInReplyTo(order.getReplyWith()));
+                    step = 1;
+                    break;
                 case 1:
                     
                   break;    
