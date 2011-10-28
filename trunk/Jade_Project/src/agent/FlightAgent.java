@@ -19,6 +19,7 @@ import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -176,7 +177,7 @@ public class FlightAgent extends Agent{
         private AID targetAgentAID;
         private Integer step = 0;
         private MessageTemplate mt;
-        private String processedRequests[]; //list to keep track of all the processedID
+        private ArrayList<String> processedRequests = new ArrayList<String>();; //list to keep track of all the processedID
         private Boolean toProceed;
         
         public void action() {
@@ -188,17 +189,22 @@ public class FlightAgent extends Agent{
                 String requestID = msg.getContent();
                 toProceed = true;
                 
-                for(int i = 0; i < processedRequests.length; i++){
-                    //if previously processed, just inform
-                    if(processedRequests[i].compareTo(requestID) == 0){
-                        ACLMessage reply = new ACLMessage(ACLMessage.INFORM);
-                        reply.addReceiver(msg.getSender());
-                        reply.setLanguage("English");
-                        reply.setContent("Request already processed");
-                        send(reply);
-                        toProceed = false;
-                        break;
+                try{
+                    for (String s : processedRequests) {
+                        //if previously processed, just inform
+                        if(s.compareTo(requestID) == 0){
+                            ACLMessage reply = new ACLMessage(ACLMessage.INFORM);
+                            reply.addReceiver(msg.getSender());
+                            reply.setLanguage("English");
+                            reply.setContent("Request already processed");
+                            send(reply);
+                            toProceed = false;
+                            break;
+                        }
                     }
+                }
+                catch(Exception ex){
+                    
                 }
                         
                 if(toProceed == true){
@@ -219,6 +225,7 @@ public class FlightAgent extends Agent{
                             bookingResult.setPerformative(ACLMessage.CONFIRM);
                         }
                     }
+                    processedRequests.add(requestID);
                     send(bookingResult);
                 }
             }
