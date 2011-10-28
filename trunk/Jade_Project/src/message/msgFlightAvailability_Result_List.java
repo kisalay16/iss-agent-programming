@@ -55,15 +55,18 @@ public class msgFlightAvailability_Result_List implements Serializable{
        return flightResultList.size();
     }
     
-    public Boolean checkIfFlightIsBooked(String sFlightNo){
-        Boolean result = false;
+    //public Boolean checkIfFlightIsBooked(String sFlightNo){
+    public Boolean bookFlight(String sFlightNo){
         
         for(int i = 0; i < getSize(); i++){
             if(getByIndex(i).getFlightID().compareTo(sFlightNo) == 0){
-                result = getByIndex(i).getIsTaken();
+                if(getByIndex(i).getIsTaken() == false){
+                    getByIndex(i).setIsTaken(true);
+                    return true;
+                }
             }
         }
-        return result;
+        return false;
         
     }
 }

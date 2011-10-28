@@ -47,8 +47,8 @@ public class FlightAgent extends Agent{
     protected void setup() {
           
           //set up the flightAva List
-          msgFlightAvailability_Result a = new msgFlightAvailability_Result("SIA", "SIA001", new Date(2011, 11, 1, 11, 20), new Date(2011, 11, 2, 8, 30), 2000.00, "Singapore", "London", true);
-          msgFlightAvailability_Result b = new msgFlightAvailability_Result("SIA", "SIA002", new Date(2011, 11, 10, 11, 20), new Date(2011, 11, 11, 8, 30), 1500.00, "London", "Singapore", true);
+          msgFlightAvailability_Result a = new msgFlightAvailability_Result("SIA", "SIA001", new Date(2011, 11, 1, 11, 20), new Date(2011, 11, 2, 8, 30), 2000.00, "Singapore", "London", false);
+          msgFlightAvailability_Result b = new msgFlightAvailability_Result("SIA", "SIA002", new Date(2011, 11, 10, 11, 20), new Date(2011, 11, 11, 8, 30), 1500.00, "London", "Singapore", false);
           flightAvaList.addFlight(a);
           flightAvaList.addFlight(b);
           
@@ -176,7 +176,7 @@ public class FlightAgent extends Agent{
                 String flightNo = msg.getContent();
                 ACLMessage bookingResult = msg.createReply();
                 if(flightNo != null){
-                    if(flightAvaList.checkIfFlightIsBooked(flightNo) == false){
+                    if(flightAvaList.bookFlight(flightNo) == false){
                         bookingResult.setPerformative(ACLMessage.REFUSE);
                     }
                     else{
