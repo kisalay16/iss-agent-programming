@@ -5,7 +5,7 @@
 package ontology;
 
 import jade.content.onto.*;
-import concept.Travel;
+import concept.TravelConcept;
 import jade.content.onto.OntologyException;
 import jade.content.schema.ConceptSchema;
 import jade.content.schema.ObjectSchema;
@@ -21,7 +21,7 @@ public class TravelOntology extends Ontology{
 
     // VOCABULARY
     // Concepts
-    public static final String TRAVEL = "travel";
+    public static final String TRAVEL_CONCEPT = "travel_concept";
     public static final String ORIGIN_CITY = "origin_city";
     public static final String ORIGIN_COUNTRY = "origin_country";
     public static final String DESTINATION_CITY = "destination_city";
@@ -44,9 +44,9 @@ public class TravelOntology extends Ontology{
 
         try {
             //for adding schema
-            add(new ConceptSchema(TRAVEL), Travel.class);
+            add(new ConceptSchema(TRAVEL_CONCEPT), TravelConcept.class);
             
-            ConceptSchema csTravel = (ConceptSchema)getSchema(TRAVEL);
+            ConceptSchema csTravel = (ConceptSchema)getSchema(TRAVEL_CONCEPT);
             csTravel.add(ORIGIN_CITY, (PrimitiveSchema)getSchema(BasicOntology.STRING));
             csTravel.add(ORIGIN_COUNTRY, (PrimitiveSchema)getSchema(BasicOntology.STRING));
             csTravel.add(DESTINATION_CITY, (PrimitiveSchema)getSchema(BasicOntology.STRING));
