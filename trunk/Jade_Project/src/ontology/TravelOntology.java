@@ -51,9 +51,9 @@ public class TravelOntology extends Ontology{
             csTravel.add(ORIGIN_COUNTRY, (PrimitiveSchema)getSchema(BasicOntology.STRING));
             csTravel.add(DESTINATION_CITY, (PrimitiveSchema)getSchema(BasicOntology.STRING));
             csTravel.add(DESTINATION_COUNTRY, (PrimitiveSchema)getSchema(BasicOntology.STRING));
-            csTravel.add(ONWARD_DATE, (PrimitiveSchema)getSchema(BasicOntology.INTEGER), ObjectSchema.OPTIONAL);
-            csTravel.add(RETURN_DATE, (PrimitiveSchema)getSchema(BasicOntology.INTEGER), ObjectSchema.OPTIONAL);
-            csTravel.add(BUDGET, (PrimitiveSchema)getSchema(BasicOntology.INTEGER), ObjectSchema.OPTIONAL);
+            csTravel.add(ONWARD_DATE, (PrimitiveSchema)getSchema(BasicOntology.DATE), ObjectSchema.OPTIONAL);
+            csTravel.add(RETURN_DATE, (PrimitiveSchema)getSchema(BasicOntology.DATE), ObjectSchema.OPTIONAL);
+            csTravel.add(BUDGET, (PrimitiveSchema)getSchema(BasicOntology.FLOAT), ObjectSchema.OPTIONAL);
             
             
         }
