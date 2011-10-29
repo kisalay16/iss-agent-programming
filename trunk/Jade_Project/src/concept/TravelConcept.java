@@ -10,9 +10,9 @@ import java.util.Date;
  *
  * @author henry
  */
-public class Travel {
+public class TravelConcept {
     
-    public Travel(){
+    public TravelConcept(){
         
     }
     
