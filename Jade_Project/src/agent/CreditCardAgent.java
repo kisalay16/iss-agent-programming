@@ -10,8 +10,10 @@ import OntologyCreditCard.BelongsTo;
 import OntologyCreditCard.CreditCard;
 import OntologyCreditCard.CreditCardOntology;
 import OntologyCreditCard.Person;
+import jade.content.ContentElement;
 import jade.content.Predicate;
 import jade.content.abs.AbsPredicate;
+import jade.content.lang.sl.SLCodec;
 import jade.content.lang.sl.SLVocabulary;
 import jade.content.onto.Ontology;
 import jade.core.AID;
@@ -79,8 +81,11 @@ public class CreditCardAgent extends Agent{
           /** End registration with the DF **/
           System.out.println(getLocalName()+ " succeeded in registration with DF");
 
-        // Add the behaviour serving queries from buyer agents
-        addBehaviour(new MakePayment());
+          getContentManager().registerLanguage(new SLCodec(), FIPANames.ContentLanguage.FIPA_SL0);
+          getContentManager().registerOntology(CreditCardOntology.getInstance());
+          
+          // Add the behaviour serving queries from buyer agents
+          addBehaviour(new MakePayment());
     }
     
     // Put agent clean-up operations here
@@ -132,15 +137,16 @@ public class CreditCardAgent extends Agent{
                 }
                 
                 else if(msg.getPerformative() == ACLMessage.QUERY_IF){
-                    // Get the predicate for which the truth is queried	
-                    try{ 
+                    try{
                         Predicate pred = (Predicate) myAgent.getContentManager().extractContent(msg);
+                        
                         if (!(pred instanceof BelongsTo)) {
                             reply.setPerformative(ACLMessage.NOT_UNDERSTOOD);
                             String content = "(" + msg.toString() + ")";
                             reply.setContent(content);
                             send(reply);
                         }
+                        
                         
                         // Reply 
                         reply.setPerformative(ACLMessage.INFORM);
@@ -150,18 +156,21 @@ public class CreditCardAgent extends Agent{
                         CreditCard c = bt.getCreditCard();
                         List approvedCreditCardList = ReturnDummyCreditCardList();
                         if (((CreditCardAgent) myAgent).CardIsBelongingTo(approvedCreditCardList, a, p, c)) {
-                            reply.setContent(msg.getContent());
-                        } else {
-                            Ontology o = getContentManager().lookupOntology(CreditCardOntology.NAME);
-                            AbsPredicate not = new AbsPredicate(SLVocabulary.NOT);
-                            not.set(SLVocabulary.NOT_WHAT, o.fromObject(bt));
-                            myAgent.getContentManager().fillContent(reply, not);
+                            reply = new ACLMessage(ACLMessage.CONFIRM);
+                            reply.addReceiver(msg.getSender());
+                        } 
+                        else {
+                            reply = new ACLMessage(ACLMessage.REFUSE);
+                            reply.addReceiver(msg.getSender());
                         }
+                        send(reply);
                         
                     }
                     catch(Exception ex){
-                        
+                        JOptionPane.showMessageDialog(travelGUI, msg);
                     }
+                        
+                    
                 }
             }
             catch(Exception ex){

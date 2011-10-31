@@ -328,35 +328,22 @@ public class TravelAgent extends Agent{
             super(myAgent, queryMsg);
             queryMsg.setProtocol(FIPANames.InteractionProtocol.FIPA_QUERY);
             
+            handleInform(queryMsg);
         }
 
         protected void handleInform(ACLMessage msg) {
-            try {
-                AbsPredicate cs = (AbsPredicate) myAgent.getContentManager().extractAbsContent(msg);
-                Ontology o = myAgent.getContentManager().lookupOntology(CreditCardOntology.NAME);
-                if (cs.getTypeName().equals(CreditCardOntology.BELONGS_TO)) {
-                    // The indicated person is already working for company c. 
-                    // Inform the user
-                    BelongsTo bt = (BelongsTo) o.toObject((AbsObject) cs);
-                    Person p = (Person) bt.getPerson();
-                    System.out.println("SUCCESS: Customer " + p.getName() + "'s credit card transaction is SUCCESSFUL. Please proceed");
-                } else if (cs.getTypeName().equals(SLVocabulary.NOT)) {
-                    // The indicated person is NOT already working for company c.
-                    // Get person and company details and create an object representing the engagement action
-                    BelongsTo bt = (BelongsTo) o.toObject(cs.getAbsObject(SLVocabulary.NOT_WHAT));
-                    Person p = (Person) bt.getPerson();
-                    System.out.println("ERROR: Customer " + p.getName() + "'s credit card transaction is UNSUCCESSFUL. Please proceed");
-                } else {
-                    // Unexpected response received from the engager agent.
-                    // Inform the user
-                    System.out.println("Unexpected response from engager agent");
-                }
-            } // End of try
-            catch (Codec.CodecException fe) {
-                System.err.println("FIPAException in fill/extract Msgcontent:" + fe.getMessage());
-            } catch (OntologyException fe) {
-                System.err.println("OntologyException in getRoleName:" + fe.getMessage());
+            ACLMessage msgAvaResult = blockingReceive(); 
+                    
+            if(msgAvaResult.getPerformative() == ACLMessage.CONFIRM){
+               travelGUI.notifyUser("Payment Accepted!!!");
             }
+            else if(msgAvaResult.getPerformative() == ACLMessage.REFUSE){
+               travelGUI.notifyUser("Payment Refused!!!");
+            }
+            else{
+                block();
+            }
+                
         }
     }
 }
