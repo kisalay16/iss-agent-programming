@@ -4,112 +4,172 @@
  */
 package Agent;
 
-import OntologyCreditCard.*;
-
-import jade.core.Agent;
+import GUI.TravelAgentGUI;
+import OntologyCreditCard.Address;
+import OntologyCreditCard.BelongsTo;
+import OntologyCreditCard.CreditCard;
+import OntologyCreditCard.CreditCardOntology;
+import OntologyCreditCard.Person;
+import jade.content.Predicate;
 import jade.content.abs.AbsPredicate;
-import jade.content.lang.Codec;
-import jade.content.lang.sl.SLCodec;
 import jade.content.lang.sl.SLVocabulary;
-import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
+import jade.content.onto.Ontology;
+import jade.core.AID;
+import jade.core.Agent;
+import jade.core.behaviours.CyclicBehaviour;
+import jade.core.behaviours.OneShotBehaviour;
+import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
-import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.domain.FIPAException;
 import jade.domain.FIPANames;
-import jade.content.onto.Ontology;
-import jade.content.onto.OntologyException;
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
+import jade.lang.acl.UnreadableException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import message.msgFlightAvailability_Result;
+import message.msgFlightAvailability_Result_List;
+import message.msgReqFlightAvailability;
 
-import jade.proto.SimpleAchieveREResponder;
-import jade.content.Predicate;
-
-import jade.util.leap.ArrayList;
-import jade.util.leap.Iterator;
-import jade.util.leap.List;
 
 /**
  *
- * @author rsoon
+ * @author henry
  */
-public class CreditCardAgent extends Agent {
+public class CreditCardAgent extends Agent{
+    //refer to http://www.iro.umontreal.ca/~dift6802/jade/src/examples/bookTrading/BookBuyerAgent.java
+    
+    private TravelAgentGUI travelGUI;
+    private DFAgentDescription dfd;
+    private ServiceDescription sd;
+    
+    private AID[] flightAgents; //all known flight agents available
+    private msgFlightAvailability_Result_List flightAvaList = new msgFlightAvailability_Result_List(); //to keep track of all the available flight list
+    
+    private msgReqFlightAvailability msgRefFlightAva = new msgReqFlightAvailability();
+    
+    private Vector requestIDList = new Vector();
+    private Integer requestRunningNo = 0;
+    
+    protected void setup() {
+          
+          /** Registration with the DF */
+          DFAgentDescription dfd = new DFAgentDescription();    
+          ServiceDescription sd = new ServiceDescription();
+          sd.setType("CreditCardTransaction"); 
+          sd.setName(getName());
+          sd.setOwnership("ExampleOfJADE");
+          dfd.addServices(sd);
+          dfd.setName(getAID());
+          try {
+            DFService.register(this,dfd);
+          } catch (FIPAException e) {
+            System.err.println(getLocalName()+" registration with DF unsucceeded. Reason: "+e.getMessage());
+            doDelete();
+          }
+          /** End registration with the DF **/
+          System.out.println(getLocalName()+ " succeeded in registration with DF");
 
-    class HandleCreditCardQueriesBehavior extends SimpleAchieveREResponder {
-
-        public HandleCreditCardQueriesBehavior(Agent myAgent) {
-            super(myAgent, MessageTemplate.and(
-                    MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_QUERY),
-                    MessageTemplate.MatchOntology(CreditCardOntology.NAME)));
+        // Add the behaviour serving queries from buyer agents
+        addBehaviour(new MakePayment());
+    }
+    
+    // Put agent clean-up operations here
+    protected void takeDown() {
+        // Deregister from the yellow pages
+        try {
+            DFService.deregister(this);
         }
-
-        public ACLMessage prepareResponse(ACLMessage msg) {
-            ACLMessage reply = msg.createReply();
-
-            if (msg.getPerformative() != ACLMessage.QUERY_IF) {
-                reply.setPerformative(ACLMessage.NOT_UNDERSTOOD);
-                String content = "(" + msg.toString() + ")";
-                reply.setContent(content);
-                return (reply);
-            }
-
+        catch (FIPAException fe) {
+            fe.printStackTrace();
+        }
+        // Printout a dismissal message
+        System.out.println("flight-agent "+getAID().getName()+" terminating.");
+    }
+    
+    private String generateRequestID(){
+        Integer temp = requestRunningNo + 1;
+        return "Request" + temp.toString();
+    }
+    
+    public void setMsgFlightAva(msgReqFlightAvailability input){
+        msgRefFlightAva = new msgReqFlightAvailability(input);
+    }
+    
+    /**
+        Inner class OfferFlightRequestsServer.
+        This is the behaviour used by flightAgent to serve incoming requests
+        for offer from buyer agents.
+        If the requested book is in the local catalogue the seller agent replies
+        with a PROPOSE message specifying the price. Otherwise a REFUSE message is
+        sent back.
+        */
+    private class MakePayment extends CyclicBehaviour {
+        private int step = 0;
+        
+        public void action() {
             try {
-                // Get the predicate for which the truth is queried	
-                Predicate pred = (Predicate) myAgent.getContentManager().extractContent(msg);
-                if (!(pred instanceof BelongsTo)) {
+                System.out.println(getLocalName()+" is waiting for a booking");
+                
+                ACLMessage msg = blockingReceive(); 
+                ACLMessage reply = msg.createReply();
+                System.out.println(getLocalName()+ " rx msg"+msg); 
+      
+                if (msg.getPerformative() != ACLMessage.QUERY_IF) {
                     reply.setPerformative(ACLMessage.NOT_UNDERSTOOD);
                     String content = "(" + msg.toString() + ")";
                     reply.setContent(content);
-                    return (reply);
+                    send(reply);
                 }
-
-                // Reply 
-                reply.setPerformative(ACLMessage.INFORM);
-                BelongsTo bt = (BelongsTo) pred;
-                Address a = bt.getPerson().getAddress();
-                Person p = bt.getPerson();
-                CreditCard c = bt.getCreditCard();
-                List approvedCreditCardList = ReturnDummyCreditCardList();
-                if (((CreditCardAgent) myAgent).CardIsBelongingTo(approvedCreditCardList, a, p, c)) {
-                    reply.setContent(msg.getContent());
-                } else {
-                    Ontology o = getContentManager().lookupOntology(CreditCardOntology.NAME);
-                    AbsPredicate not = new AbsPredicate(SLVocabulary.NOT);
-                    not.set(SLVocabulary.NOT_WHAT, o.fromObject(bt));
-                    myAgent.getContentManager().fillContent(reply, not);
+                
+                else if(msg.getPerformative() == ACLMessage.QUERY_IF){
+                    // Get the predicate for which the truth is queried	
+                    try{ 
+                        Predicate pred = (Predicate) myAgent.getContentManager().extractContent(msg);
+                        if (!(pred instanceof BelongsTo)) {
+                            reply.setPerformative(ACLMessage.NOT_UNDERSTOOD);
+                            String content = "(" + msg.toString() + ")";
+                            reply.setContent(content);
+                            send(reply);
+                        }
+                        
+                        // Reply 
+                        reply.setPerformative(ACLMessage.INFORM);
+                        BelongsTo bt = (BelongsTo) pred;
+                        Address a = bt.getPerson().getAddress();
+                        Person p = bt.getPerson();
+                        CreditCard c = bt.getCreditCard();
+                        List approvedCreditCardList = ReturnDummyCreditCardList();
+                        if (((CreditCardAgent) myAgent).CardIsBelongingTo(approvedCreditCardList, a, p, c)) {
+                            reply.setContent(msg.getContent());
+                        } else {
+                            Ontology o = getContentManager().lookupOntology(CreditCardOntology.NAME);
+                            AbsPredicate not = new AbsPredicate(SLVocabulary.NOT);
+                            not.set(SLVocabulary.NOT_WHAT, o.fromObject(bt));
+                            myAgent.getContentManager().fillContent(reply, not);
+                        }
+                        
+                    }
+                    catch(Exception ex){
+                        
+                    }
                 }
-            } catch (Codec.CodecException fe) {
-                System.err.println(myAgent.getLocalName() + " Fill/extract content unsucceeded. Reason:" + fe.getMessage());
-            } catch (OntologyException oe) {
-                System.err.println(myAgent.getLocalName() + " getRoleName() unsucceeded. Reason:" + oe.getMessage());
             }
-
-            return (reply);
+            catch(Exception ex){
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            }       
         }
     }
-
-    protected void setup() {
-        System.out.println("Hello, credit card agent at your service");
-        RegisterAgent();
-
-        getContentManager().registerLanguage(new SLCodec(), FIPANames.ContentLanguage.FIPA_SL0);
-        getContentManager().registerOntology(CreditCardOntology.getInstance());
-        addBehaviour(new HandleCreditCardQueriesBehavior(this));
-    }
-
-    private void RegisterAgent() {
-        DFAgentDescription dfd = new DFAgentDescription();
-        dfd.setName(getAID());
-        ServiceDescription sd = new ServiceDescription();
-        sd.setType("CreditCardTransaction");
-        sd.setName("JadeTravelAgent");
-        dfd.addServices(sd);
-        try {
-            DFService.register(this, dfd);
-        } catch (FIPAException fe) {
-            fe.printStackTrace();
-        }
-    }
-
+    
     private List ReturnDummyCreditCardList() {
         List authorisedCardList;
         
@@ -129,7 +189,7 @@ public class CreditCardAgent extends Agent {
 
         return authorisedCardList;
     }
-
+    
     private boolean CardIsBelongingTo(List authCL, Address a, Person p, CreditCard c) {
         boolean isBelongingTo = false;
 
