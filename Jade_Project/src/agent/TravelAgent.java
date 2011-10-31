@@ -271,10 +271,13 @@ public class TravelAgent extends Agent{
     public class HandleCreditCardTransactionBehavior extends SequentialBehaviour{
         private BelongsTo belongTo;
         private Behaviour creditCardQueryBehaviour = null;
+        private ACLMessage queryMsg;
         
         public HandleCreditCardTransactionBehavior(BelongsTo input){
             belongTo = new BelongsTo();
             belongTo = input;
+            
+            onStart();
         }
         
          public void onStart() {
