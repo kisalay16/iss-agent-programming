@@ -185,31 +185,37 @@ public class TravelAgentGUI extends javax.swing.JFrame {
         lblAddBlkNo.setText(resourceMap.getString("lblAddBlkNo.text")); // NOI18N
         lblAddBlkNo.setName("lblAddBlkNo"); // NOI18N
 
+        txtAddBlkNo.setText(resourceMap.getString("txtAddBlkNo.text")); // NOI18N
         txtAddBlkNo.setName("txtAddBlkNo"); // NOI18N
 
         lblAddStName.setText(resourceMap.getString("lblAddStName.text")); // NOI18N
         lblAddStName.setName("lblAddStName"); // NOI18N
 
+        txtAddStreet.setText(resourceMap.getString("txtAddStreet.text")); // NOI18N
         txtAddStreet.setName("txtAddStreet"); // NOI18N
 
         lblAddUnit.setText(resourceMap.getString("lblAddUnit.text")); // NOI18N
         lblAddUnit.setName("lblAddUnit"); // NOI18N
 
+        txtAddUnit.setText(resourceMap.getString("txtAddUnit.text")); // NOI18N
         txtAddUnit.setName("txtAddUnit"); // NOI18N
 
         lblAddPostal.setText(resourceMap.getString("lblAddPostal.text")); // NOI18N
         lblAddPostal.setName("lblAddPostal"); // NOI18N
 
+        txtAddPostal.setText(resourceMap.getString("txtAddPostal.text")); // NOI18N
         txtAddPostal.setName("txtAddPostal"); // NOI18N
 
         lblCCType.setText(resourceMap.getString("lblCCType.text")); // NOI18N
         lblCCType.setName("lblCCType"); // NOI18N
 
+        txtCCType.setText(resourceMap.getString("txtCCType.text")); // NOI18N
         txtCCType.setName("txtCCType"); // NOI18N
 
         lblCCNo.setText(resourceMap.getString("lblCCNo.text")); // NOI18N
         lblCCNo.setName("lblCCNo"); // NOI18N
 
+        txtCCNo.setText(resourceMap.getString("txtCCNo.text")); // NOI18N
         txtCCNo.setName("txtCCNo"); // NOI18N
 
         btnMakePayment.setAction(actionMap.get("makeCCPayment")); // NOI18N

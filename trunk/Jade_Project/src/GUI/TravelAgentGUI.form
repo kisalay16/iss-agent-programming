@@ -386,6 +386,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtAddBlkNo">
       <Properties>
+        <Property name="text" type="java.lang.String" resourceKey="txtAddBlkNo.text"/>
         <Property name="name" type="java.lang.String" value="txtAddBlkNo" noResource="true"/>
       </Properties>
     </Component>
@@ -397,6 +398,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtAddStreet">
       <Properties>
+        <Property name="text" type="java.lang.String" resourceKey="txtAddStreet.text"/>
         <Property name="name" type="java.lang.String" value="txtAddStreet" noResource="true"/>
       </Properties>
     </Component>
@@ -408,6 +410,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtAddUnit">
       <Properties>
+        <Property name="text" type="java.lang.String" resourceKey="txtAddUnit.text"/>
         <Property name="name" type="java.lang.String" value="txtAddUnit" noResource="true"/>
       </Properties>
     </Component>
@@ -419,6 +422,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtAddPostal">
       <Properties>
+        <Property name="text" type="java.lang.String" resourceKey="txtAddPostal.text"/>
         <Property name="name" type="java.lang.String" value="txtAddPostal" noResource="true"/>
       </Properties>
     </Component>
@@ -430,6 +434,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtCCType">
       <Properties>
+        <Property name="text" type="java.lang.String" resourceKey="txtCCType.text"/>
         <Property name="name" type="java.lang.String" value="txtCCType" noResource="true"/>
       </Properties>
     </Component>
@@ -441,6 +446,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtCCNo">
       <Properties>
+        <Property name="text" type="java.lang.String" resourceKey="txtCCNo.text"/>
         <Property name="name" type="java.lang.String" value="txtCCNo" noResource="true"/>
       </Properties>
     </Component>
