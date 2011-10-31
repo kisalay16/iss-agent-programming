@@ -133,7 +133,7 @@ public class TravelAgent extends Agent{
     public void makeCCPayment(BelongsTo bt){
         //add new behaviour
         try{
-            addBehaviour(new HandleCreditCardTransactionBehavior(bt));
+            HandleCreditCardTransactionBehavior ccPayment = new HandleCreditCardTransactionBehavior(bt, this);
         }catch(Exception ex){
             JOptionPane.showMessageDialog(null, reader);
         }
@@ -273,7 +273,8 @@ public class TravelAgent extends Agent{
         private Behaviour creditCardQueryBehaviour = null;
         private ACLMessage queryMsg;
         
-        public HandleCreditCardTransactionBehavior(BelongsTo input){
+        public HandleCreditCardTransactionBehavior(BelongsTo input, Agent myAgent){
+            super(myAgent);
             belongTo = new BelongsTo();
             belongTo = input;
             
