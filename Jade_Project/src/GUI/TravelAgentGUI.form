@@ -251,36 +251,43 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtOrigin_Country">
       <Properties>
+        <Property name="text" type="java.lang.String" resourceKey="txtOrigin_Country.text"/>
         <Property name="name" type="java.lang.String" value="txtOrigin_Country" noResource="true"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtDestination_City">
       <Properties>
+        <Property name="text" type="java.lang.String" resourceKey="txtDestination_City.text"/>
         <Property name="name" type="java.lang.String" value="txtDestination_City" noResource="true"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtDestination_Country">
       <Properties>
+        <Property name="text" type="java.lang.String" resourceKey="txtDestination_Country.text"/>
         <Property name="name" type="java.lang.String" value="txtDestination_Country" noResource="true"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtOnWard_Date">
       <Properties>
+        <Property name="text" type="java.lang.String" resourceKey="txtOnWard_Date.text"/>
         <Property name="name" type="java.lang.String" value="txtOnWard_Date" noResource="true"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtReturn_Date">
       <Properties>
+        <Property name="text" type="java.lang.String" resourceKey="txtReturn_Date.text"/>
         <Property name="name" type="java.lang.String" value="txtReturn_Date" noResource="true"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtNo_Of_Passengers">
       <Properties>
+        <Property name="text" type="java.lang.String" resourceKey="txtNo_Of_Passengers.text"/>
         <Property name="name" type="java.lang.String" value="txtNo_Of_Passengers" noResource="true"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtBudget">
       <Properties>
+        <Property name="text" type="java.lang.String" resourceKey="txtBudget.text"/>
         <Property name="name" type="java.lang.String" value="txtBudget" noResource="true"/>
       </Properties>
     </Component>

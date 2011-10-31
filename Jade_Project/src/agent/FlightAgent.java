@@ -61,7 +61,7 @@ public class FlightAgent extends Agent{
           /** Registration with the DF */
           DFAgentDescription dfd = new DFAgentDescription();    
           ServiceDescription sd = new ServiceDescription();
-          sd.setType("ObjectReaderAgent"); 
+          sd.setType("flightAgent"); 
           sd.setName(getName());
           sd.setOwnership("ExampleOfJADE");
           dfd.addServices(sd);

@@ -123,18 +123,25 @@ public class TravelAgentGUI extends javax.swing.JFrame {
         txtOrigin_City.setText(resourceMap.getString("txtOrigin_City.text")); // NOI18N
         txtOrigin_City.setName("txtOrigin_City"); // NOI18N
 
+        txtOrigin_Country.setText(resourceMap.getString("txtOrigin_Country.text")); // NOI18N
         txtOrigin_Country.setName("txtOrigin_Country"); // NOI18N
 
+        txtDestination_City.setText(resourceMap.getString("txtDestination_City.text")); // NOI18N
         txtDestination_City.setName("txtDestination_City"); // NOI18N
 
+        txtDestination_Country.setText(resourceMap.getString("txtDestination_Country.text")); // NOI18N
         txtDestination_Country.setName("txtDestination_Country"); // NOI18N
 
+        txtOnWard_Date.setText(resourceMap.getString("txtOnWard_Date.text")); // NOI18N
         txtOnWard_Date.setName("txtOnWard_Date"); // NOI18N
 
+        txtReturn_Date.setText(resourceMap.getString("txtReturn_Date.text")); // NOI18N
         txtReturn_Date.setName("txtReturn_Date"); // NOI18N
 
+        txtNo_Of_Passengers.setText(resourceMap.getString("txtNo_Of_Passengers.text")); // NOI18N
         txtNo_Of_Passengers.setName("txtNo_Of_Passengers"); // NOI18N
 
+        txtBudget.setText(resourceMap.getString("txtBudget.text")); // NOI18N
         txtBudget.setName("txtBudget"); // NOI18N
 
         javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(jade_project.Jade_ProjectApp.class).getContext().getActionMap(TravelAgentGUI.class, this);

@@ -80,7 +80,7 @@ public class TravelAgent extends Agent{
           
           DFAgentDescription template = new DFAgentDescription();
           ServiceDescription sd = new ServiceDescription();
-          sd.setType("ObjectReaderAgent");
+          sd.setType("flightAgent");
           template.addServices(sd);
 
           try {
