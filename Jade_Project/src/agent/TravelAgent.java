@@ -5,10 +5,20 @@
 package Agent;
 
 import GUI.TravelAgentGUI;
+import OntologyCreditCard.BelongsTo;
+import OntologyCreditCard.CreditCardOntology;
+import OntologyCreditCard.Person;
+import jade.content.abs.AbsObject;
+import jade.content.abs.AbsPredicate;
+import jade.content.lang.Codec;
+import jade.content.lang.sl.SLVocabulary;
+import jade.content.onto.Ontology;
+import jade.content.onto.OntologyException;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.CyclicBehaviour;
+import jade.core.behaviours.SequentialBehaviour;
 import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
@@ -19,6 +29,7 @@ import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
+import jade.proto.SimpleAchieveREInitiator;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Vector;
@@ -49,8 +60,8 @@ public class TravelAgent extends Agent{
     private Vector flightAgentList = new Vector();
     private AID reader = new AID();
     private AID selectedAID;
-    
-    
+    private AID creditCardAgent;
+    private AID weatherForecastAgent;
     
     private msgReqFlightAvailability msgRefFlightAva = new msgReqFlightAvailability();
     
@@ -78,12 +89,9 @@ public class TravelAgent extends Agent{
             }
           } catch (Exception fe) {
               fe.printStackTrace();
-              System.err.println(getLocalName()+" search with DF is not succeeded because of " + fe.getMessage());
+              travelGUI.notifyUser(getLocalName()+" search with DF is not succeeded because of " + fe.getMessage());
               doDelete();
           }
-
-          System.out.println(getLocalName()+" agent sends ACLMessages whose content is a Java object");
-
         
           this.flight = new msgReqFlightAvailability();
         
@@ -98,6 +106,8 @@ public class TravelAgent extends Agent{
         // Printout a dismissal message
         System.out.println("Buyer-agent "+ getAID().getName()+ "terminated.");
     }
+    
+    //-------------------------------all methods for the UI------------------------------------
     
     //to request for flight retails based on req.
     public void getFlightDetails(msgReqFlightAvailability input){
@@ -119,7 +129,17 @@ public class TravelAgent extends Agent{
         }
     }
     
+    //for making payment
+    public void makeCCPayment(BelongsTo bt){
+        //add new behaviour
+        try{
+            addBehaviour(new HandleCreditCardTransactionBehavior(bt));
+        }catch(Exception ex){
+            JOptionPane.showMessageDialog(null, reader);
+        }
+    }
     
+    //-------------------------------all methods for the UI------------------------------------
     
     private class RequestFlightDetails extends CyclicBehaviour {
         private MessageTemplate mt; // The template to receive replies
@@ -247,4 +267,77 @@ public class TravelAgent extends Agent{
                      
         }
     } // End of inner class OfferRequestsServer
+    
+    public class HandleCreditCardTransactionBehavior extends SequentialBehaviour{
+        private BelongsTo belongTo;
+        private Behaviour creditCardQueryBehaviour = null;
+        
+        public HandleCreditCardTransactionBehavior(BelongsTo input){
+            belongTo = new BelongsTo();
+            belongTo = input;
+        }
+        
+         public void onStart() {
+            try {
+                Ontology o = myAgent.getContentManager().lookupOntology(CreditCardOntology.NAME);
+                // Create an ACL message to query the engager agent if the above fact is true or false
+                ACLMessage queryMsg = new ACLMessage(ACLMessage.QUERY_IF);
+                queryMsg.addReceiver(((TravelAgent) myAgent).creditCardAgent);
+                queryMsg.setLanguage(FIPANames.ContentLanguage.FIPA_SL0);
+                queryMsg.setOntology(CreditCardOntology.NAME);
+
+                try {
+                    myAgent.getContentManager().fillContent(queryMsg, belongTo);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                // Create and add a behaviour to query the engager agent whether
+                // person p already works for company c following a FIPAQeury protocol
+                creditCardQueryBehaviour = new CheckCreditCardTransactionBehavior(myAgent, queryMsg);
+                addSubBehaviour(creditCardQueryBehaviour);
+ 
+            } catch (Exception ex) {
+                travelGUI.notifyUser(ex.getMessage());
+            }
+        }
+    }
+    
+    class CheckCreditCardTransactionBehavior extends SimpleAchieveREInitiator {
+        // Constructor
+
+        public CheckCreditCardTransactionBehavior(Agent myAgent, ACLMessage queryMsg) {
+            super(myAgent, queryMsg);
+            queryMsg.setProtocol(FIPANames.InteractionProtocol.FIPA_QUERY);
+        }
+
+        protected void handleInform(ACLMessage msg) {
+            try {
+                AbsPredicate cs = (AbsPredicate) myAgent.getContentManager().extractAbsContent(msg);
+                Ontology o = myAgent.getContentManager().lookupOntology(CreditCardOntology.NAME);
+                if (cs.getTypeName().equals(CreditCardOntology.BELONGS_TO)) {
+                    // The indicated person is already working for company c. 
+                    // Inform the user
+                    BelongsTo bt = (BelongsTo) o.toObject((AbsObject) cs);
+                    Person p = (Person) bt.getPerson();
+                    System.out.println("SUCCESS: Customer " + p.getName() + "'s credit card transaction is SUCCESSFUL. Please proceed");
+                } else if (cs.getTypeName().equals(SLVocabulary.NOT)) {
+                    // The indicated person is NOT already working for company c.
+                    // Get person and company details and create an object representing the engagement action
+                    BelongsTo bt = (BelongsTo) o.toObject(cs.getAbsObject(SLVocabulary.NOT_WHAT));
+                    Person p = (Person) bt.getPerson();
+                    System.out.println("ERROR: Customer " + p.getName() + "'s credit card transaction is UNSUCCESSFUL. Please proceed");
+                } else {
+                    // Unexpected response received from the engager agent.
+                    // Inform the user
+                    System.out.println("Unexpected response from engager agent");
+                }
+            } // End of try
+            catch (Codec.CodecException fe) {
+                System.err.println("FIPAException in fill/extract Msgcontent:" + fe.getMessage());
+            } catch (OntologyException fe) {
+                System.err.println("OntologyException in getRoleName:" + fe.getMessage());
+            }
+        }
+    }
 }
