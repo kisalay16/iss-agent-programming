@@ -11,6 +11,7 @@ import OntologyCreditCard.Person;
 import jade.content.abs.AbsObject;
 import jade.content.abs.AbsPredicate;
 import jade.content.lang.Codec;
+import jade.content.lang.sl.SLCodec;
 import jade.content.lang.sl.SLVocabulary;
 import jade.content.onto.Ontology;
 import jade.content.onto.OntologyException;
@@ -63,12 +64,16 @@ public class TravelAgent extends Agent{
     private AID creditCardAgent;
     private AID weatherForecastAgent;
     
+    private Codec codec;
+    
     private msgReqFlightAvailability msgRefFlightAva = new msgReqFlightAvailability();
     
     protected void setup() {
           travelGUI = new TravelAgentGUI(this);
           travelGUI.showGUI();
           /** Search with the DF for the name of the ObjectReaderAgent **/
+          
+          codec = new SLCodec();
           
           DFAgentDescription dfd = new DFAgentDescription();  
           ServiceDescription sd = new ServiceDescription();
@@ -284,6 +289,7 @@ public class TravelAgent extends Agent{
          public void onStart() {
             try {
                 Ontology o = myAgent.getContentManager().lookupOntology(CreditCardOntology.NAME);
+                
                 // Create an ACL message to query the engager agent if the above fact is true or false
                 ACLMessage queryMsg = new ACLMessage(ACLMessage.QUERY_IF);
                 queryMsg.addReceiver(((TravelAgent) myAgent).creditCardAgent);
@@ -291,9 +297,10 @@ public class TravelAgent extends Agent{
                 queryMsg.setOntology(CreditCardOntology.NAME);
 
                 try {
+                    myAgent.getContentManager().registerLanguage(codec, FIPANames.ContentLanguage.FIPA_SL0);
                     myAgent.getContentManager().fillContent(queryMsg, belongTo);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    travelGUI.notifyUser(e.getMessage());
                 }
 
                 // Create and add a behaviour to query the engager agent whether
