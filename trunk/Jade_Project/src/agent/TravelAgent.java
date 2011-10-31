@@ -305,6 +305,7 @@ public class TravelAgent extends Agent{
 
                 try {
                     myAgent.getContentManager().fillContent(queryMsg, belongTo);
+                    myAgent.send(queryMsg);
                 } catch (Exception e) {
                     travelGUI.notifyUser(e.getMessage());
                 }
@@ -327,7 +328,6 @@ public class TravelAgent extends Agent{
             super(myAgent, queryMsg);
             queryMsg.setProtocol(FIPANames.InteractionProtocol.FIPA_QUERY);
             
-            this.handleInform(queryMsg);
         }
 
         protected void handleInform(ACLMessage msg) {
