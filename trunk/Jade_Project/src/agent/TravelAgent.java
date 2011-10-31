@@ -75,6 +75,9 @@ public class TravelAgent extends Agent{
           
           codec = new SLCodec();
           
+          getContentManager().registerLanguage(codec, FIPANames.ContentLanguage.FIPA_SL0);
+          getContentManager().registerOntology(CreditCardOntology.getInstance());
+          
           DFAgentDescription dfd = new DFAgentDescription();  
           ServiceDescription sd = new ServiceDescription();
           sd.setType("ObjectReaderAgent"); 
@@ -297,7 +300,6 @@ public class TravelAgent extends Agent{
                 queryMsg.setOntology(CreditCardOntology.NAME);
 
                 try {
-                    myAgent.getContentManager().registerLanguage(codec, FIPANames.ContentLanguage.FIPA_SL0);
                     myAgent.getContentManager().fillContent(queryMsg, belongTo);
                 } catch (Exception e) {
                     travelGUI.notifyUser(e.getMessage());
