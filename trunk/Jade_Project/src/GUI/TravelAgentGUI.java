@@ -2,6 +2,10 @@ package GUI;
 
 
 import Agent.TravelAgent;
+import OntologyCreditCard.Address;
+import OntologyCreditCard.BelongsTo;
+import OntologyCreditCard.CreditCard;
+import OntologyCreditCard.Person;
 import jade.core.AID;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -208,6 +212,7 @@ public class TravelAgentGUI extends javax.swing.JFrame {
 
         txtCCNo.setName("txtCCNo"); // NOI18N
 
+        btnMakePayment.setAction(actionMap.get("makeCCPayment")); // NOI18N
         btnMakePayment.setText(resourceMap.getString("btnMakePayment.text")); // NOI18N
         btnMakePayment.setActionCommand(resourceMap.getString("btnMakePayment.actionCommand")); // NOI18N
         btnMakePayment.setName("btnMakePayment"); // NOI18N
@@ -433,6 +438,33 @@ public class TravelAgentGUI extends javax.swing.JFrame {
     @Action
     public void selectFlight() {
         travelA.bookFlight("Request1", new AID());
+    }
+
+    @Action
+    public void makeCCPayment() {
+        
+        Person p = new Person();
+        Address add = new Address();
+        CreditCard card = new CreditCard();
+        
+        p.setName(txtCustName.getText());
+        
+        add.SetBlockNumber(txtAddBlkNo.getText());
+        add.SetPostalCode(txtAddPostal.getText());
+        add.SetStreetName(txtAddStreet.getText());
+        add.SetUnitNumber(txtAddUnit.getText());
+        p.setAddress(add);
+        
+        card.SetCardNumber(txtCCNo.getText());
+        card.SetCardType(txtCCType.getText());
+
+        BelongsTo bt = new BelongsTo();
+        bt.SetPerson(p);
+        bt.setCreditCard(card);
+        
+        travelA.makeCCPayment(bt);
+        
+        
     }
         
     // Variables declaration - do not modify//GEN-BEGIN:variables
