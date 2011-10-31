@@ -106,6 +106,8 @@ public class TravelAgent extends Agent{
           }
         
           this.flight = new msgReqFlightAvailability();
+          
+          addBehaviour(new PaymentServer());
         
     }
     
@@ -306,14 +308,10 @@ public class TravelAgent extends Agent{
                 try {
                     myAgent.getContentManager().fillContent(queryMsg, belongTo);
                     myAgent.send(queryMsg);
+                   
                 } catch (Exception e) {
                     travelGUI.notifyUser(e.getMessage());
                 }
-
-                // Create and add a behaviour to query the engager agent whether
-                // person p already works for company c following a FIPAQeury protocol
-                creditCardQueryBehaviour = new CheckCreditCardTransactionBehavior(myAgent, queryMsg);
-                addSubBehaviour(creditCardQueryBehaviour);
  
             } catch (Exception ex) {
                 travelGUI.notifyUser(ex.getMessage());
@@ -321,29 +319,19 @@ public class TravelAgent extends Agent{
         }
     }
     
-    class CheckCreditCardTransactionBehavior extends SimpleAchieveREInitiator {
-        // Constructor
+    private class PaymentServer extends CyclicBehaviour {
+        
+        public void action() {
+            System.out.println(getLocalName()+" is waiting for a payment result");
+            ACLMessage msg = blockingReceive(); 
+            System.out.println(getLocalName()+ " rx msg"+msg); 
 
-        public CheckCreditCardTransactionBehavior(Agent myAgent, ACLMessage queryMsg) {
-            super(myAgent, queryMsg);
-            queryMsg.setProtocol(FIPANames.InteractionProtocol.FIPA_QUERY);
-            
-            handleInform(queryMsg);
-        }
-
-        protected void handleInform(ACLMessage msg) {
-            ACLMessage msgAvaResult = blockingReceive(); 
-                    
-            if(msgAvaResult.getPerformative() == ACLMessage.CONFIRM){
-               travelGUI.notifyUser("Payment Accepted!!!");
+            if(msg.getPerformative() == ACLMessage.CONFIRM){
+                travelGUI.notifyUser("Transaction Accpeted");
             }
-            else if(msgAvaResult.getPerformative() == ACLMessage.REFUSE){
-               travelGUI.notifyUser("Payment Refused!!!");
+            else if(msg.getPerformative() == ACLMessage.REFUSE){
+                travelGUI.notifyUser("Transaction Rejected");
             }
-            else{
-                block();
-            }
-                
         }
     }
 }
