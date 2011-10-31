@@ -72,6 +72,21 @@ public class TravelAgentGUI extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblAvaFlights = new javax.swing.JTable();
         btnSelectFlight = new javax.swing.JButton();
+        lblCustName = new javax.swing.JLabel();
+        txtCustName = new javax.swing.JTextField();
+        lblAddBlkNo = new javax.swing.JLabel();
+        txtAddBlkNo = new javax.swing.JTextField();
+        lblAddStName = new javax.swing.JLabel();
+        txtAddStreet = new javax.swing.JTextField();
+        lblAddUnit = new javax.swing.JLabel();
+        txtAddUnit = new javax.swing.JTextField();
+        lblAddPostal = new javax.swing.JLabel();
+        txtAddPostal = new javax.swing.JTextField();
+        lblCCType = new javax.swing.JLabel();
+        txtCCType = new javax.swing.JTextField();
+        lblCCNo = new javax.swing.JLabel();
+        txtCCNo = new javax.swing.JTextField();
+        btnMakePayment = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setName("Form"); // NOI18N
@@ -157,43 +172,104 @@ public class TravelAgentGUI extends javax.swing.JFrame {
         btnSelectFlight.setText(resourceMap.getString("btnSelectFlight.text")); // NOI18N
         btnSelectFlight.setName("btnSelectFlight"); // NOI18N
 
+        lblCustName.setText(resourceMap.getString("lblCustName.text")); // NOI18N
+        lblCustName.setName("lblCustName"); // NOI18N
+
+        txtCustName.setText(resourceMap.getString("txtCustName.text")); // NOI18N
+        txtCustName.setName("txtCustName"); // NOI18N
+
+        lblAddBlkNo.setText(resourceMap.getString("lblAddBlkNo.text")); // NOI18N
+        lblAddBlkNo.setName("lblAddBlkNo"); // NOI18N
+
+        txtAddBlkNo.setName("txtAddBlkNo"); // NOI18N
+
+        lblAddStName.setText(resourceMap.getString("lblAddStName.text")); // NOI18N
+        lblAddStName.setName("lblAddStName"); // NOI18N
+
+        txtAddStreet.setName("txtAddStreet"); // NOI18N
+
+        lblAddUnit.setText(resourceMap.getString("lblAddUnit.text")); // NOI18N
+        lblAddUnit.setName("lblAddUnit"); // NOI18N
+
+        txtAddUnit.setName("txtAddUnit"); // NOI18N
+
+        lblAddPostal.setText(resourceMap.getString("lblAddPostal.text")); // NOI18N
+        lblAddPostal.setName("lblAddPostal"); // NOI18N
+
+        txtAddPostal.setName("txtAddPostal"); // NOI18N
+
+        lblCCType.setText(resourceMap.getString("lblCCType.text")); // NOI18N
+        lblCCType.setName("lblCCType"); // NOI18N
+
+        txtCCType.setName("txtCCType"); // NOI18N
+
+        lblCCNo.setText(resourceMap.getString("lblCCNo.text")); // NOI18N
+        lblCCNo.setName("lblCCNo"); // NOI18N
+
+        txtCCNo.setName("txtCCNo"); // NOI18N
+
+        btnMakePayment.setText(resourceMap.getString("btnMakePayment.text")); // NOI18N
+        btnMakePayment.setActionCommand(resourceMap.getString("btnMakePayment.actionCommand")); // NOI18N
+        btnMakePayment.setName("btnMakePayment"); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(btnMakePayment, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lblCustName)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(25, 25, 25)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(jLabel2)
+                                        .addComponent(jLabel1)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel8)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel6)
+                                        .addComponent(jLabel5))
+                                    .addComponent(jLabel7)))
+                            .addComponent(lblAddBlkNo)
+                            .addComponent(lblAddStName)
+                            .addComponent(lblAddUnit)
+                            .addComponent(lblAddPostal)
+                            .addComponent(lblCCType)
+                            .addComponent(lblCCNo))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(txtCCNo, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtCCType, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtAddPostal, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtAddUnit, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtAddStreet, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtAddBlkNo, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtCustName)
+                            .addComponent(txtOnWard_Date, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                            .addComponent(txtDestination_Country, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                            .addComponent(txtBudget, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                            .addComponent(txtNo_Of_Passengers, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                            .addComponent(txtReturn_Date, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                            .addComponent(btnReqFlightDetails)
+                            .addComponent(txtOrigin_City, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                            .addComponent(txtOrigin_Country, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                            .addComponent(txtDestination_City, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE))))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(25, 25, 25)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel1)))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jLabel3)
-                                .addComponent(jLabel4)
-                                .addComponent(jLabel8)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel6)
-                                    .addComponent(jLabel5))
-                                .addComponent(jLabel7)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtOnWard_Date, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtDestination_Country, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(txtBudget, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtNo_Of_Passengers, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtReturn_Date, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btnReqFlightDetails, javax.swing.GroupLayout.Alignment.TRAILING))
-                            .addComponent(txtOrigin_City, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtOrigin_Country, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtDestination_City, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 501, Short.MAX_VALUE))
-                    .addComponent(btnSelectFlight, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(428, 428, 428)
+                        .addComponent(btnSelectFlight)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -236,9 +312,42 @@ public class TravelAgentGUI extends javax.swing.JFrame {
                             .addComponent(txtBudget, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnReqFlightDetails)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnSelectFlight))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(28, 28, 28)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblCustName)
+                            .addComponent(txtCustName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtAddBlkNo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblAddBlkNo))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnSelectFlight)
-                .addContainerGap(11, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtAddStreet, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblAddStName))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtAddUnit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblAddUnit))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtAddPostal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblAddPostal))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtCCType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblCCType))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtCCNo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblCCNo))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnMakePayment)
+                .addContainerGap(63, Short.MAX_VALUE))
         );
 
         pack();
@@ -327,6 +436,7 @@ public class TravelAgentGUI extends javax.swing.JFrame {
     }
         
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnMakePayment;
     private javax.swing.JButton btnReqFlightDetails;
     private javax.swing.JButton btnSelectFlight;
     private javax.swing.JLabel jLabel1;
@@ -338,8 +448,22 @@ public class TravelAgentGUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblAddBlkNo;
+    private javax.swing.JLabel lblAddPostal;
+    private javax.swing.JLabel lblAddStName;
+    private javax.swing.JLabel lblAddUnit;
+    private javax.swing.JLabel lblCCNo;
+    private javax.swing.JLabel lblCCType;
+    private javax.swing.JLabel lblCustName;
     private javax.swing.JTable tblAvaFlights;
+    private javax.swing.JTextField txtAddBlkNo;
+    private javax.swing.JTextField txtAddPostal;
+    private javax.swing.JTextField txtAddStreet;
+    private javax.swing.JTextField txtAddUnit;
     private javax.swing.JTextField txtBudget;
+    private javax.swing.JTextField txtCCNo;
+    private javax.swing.JTextField txtCCType;
+    private javax.swing.JTextField txtCustName;
     private javax.swing.JTextField txtDestination_City;
     private javax.swing.JTextField txtDestination_Country;
     private javax.swing.JTextField txtNo_Of_Passengers;

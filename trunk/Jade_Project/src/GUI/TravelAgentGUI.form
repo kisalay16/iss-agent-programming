@@ -23,47 +23,72 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="jLabel2" alignment="1" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jLabel1" alignment="1" min="-2" max="-2" attributes="0"/>
+          <Group type="102" alignment="0" attributes="0">
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="btnMakePayment" min="-2" pref="109" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="lblCustName" alignment="1" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" alignment="1" groupAlignment="0" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="1" attributes="0">
+                                      <Component id="jLabel2" alignment="1" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel1" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <Group type="103" alignment="0" groupAlignment="1" attributes="0">
+                                  <Component id="jLabel3" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel4" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel8" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  <Group type="103" alignment="1" groupAlignment="0" attributes="0">
+                                      <Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Component id="jLabel7" alignment="1" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <Group type="103" alignment="0" groupAlignment="1" attributes="0">
-                              <Component id="jLabel3" alignment="1" min="-2" max="-2" attributes="0"/>
-                              <Component id="jLabel4" alignment="1" min="-2" max="-2" attributes="0"/>
-                              <Component id="jLabel8" alignment="1" min="-2" max="-2" attributes="0"/>
-                              <Group type="103" alignment="1" groupAlignment="0" attributes="0">
-                                  <Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <Component id="jLabel7" alignment="1" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                          <Component id="lblAddBlkNo" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblAddStName" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblAddUnit" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblAddPostal" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblCCType" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblCCNo" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="txtOnWard_Date" min="-2" pref="162" max="-2" attributes="0"/>
-                          <Component id="txtDestination_Country" min="-2" pref="162" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="txtBudget" min="-2" pref="162" max="-2" attributes="0"/>
-                              <Component id="txtNo_Of_Passengers" min="-2" pref="162" max="-2" attributes="0"/>
-                              <Component id="txtReturn_Date" min="-2" pref="162" max="-2" attributes="0"/>
-                              <Component id="btnReqFlightDetails" alignment="1" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <Component id="txtOrigin_City" min="-2" pref="162" max="-2" attributes="0"/>
-                          <Component id="txtOrigin_Country" alignment="0" min="-2" pref="162" max="-2" attributes="0"/>
-                          <Component id="txtDestination_City" min="-2" pref="162" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                          <Component id="txtCCNo" alignment="0" max="32767" attributes="1"/>
+                          <Component id="txtCCType" alignment="0" max="32767" attributes="1"/>
+                          <Component id="txtAddPostal" alignment="0" max="32767" attributes="1"/>
+                          <Component id="txtAddUnit" alignment="0" max="32767" attributes="1"/>
+                          <Component id="txtAddStreet" alignment="0" max="32767" attributes="1"/>
+                          <Component id="txtAddBlkNo" alignment="0" max="32767" attributes="1"/>
+                          <Component id="txtCustName" alignment="1" max="32767" attributes="1"/>
+                          <Component id="txtOnWard_Date" alignment="1" pref="162" max="32767" attributes="1"/>
+                          <Component id="txtDestination_Country" alignment="1" pref="162" max="32767" attributes="1"/>
+                          <Component id="txtBudget" alignment="1" pref="162" max="32767" attributes="1"/>
+                          <Component id="txtNo_Of_Passengers" alignment="1" pref="162" max="32767" attributes="1"/>
+                          <Component id="txtReturn_Date" alignment="1" pref="162" max="32767" attributes="1"/>
+                          <Component id="btnReqFlightDetails" alignment="1" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtOrigin_City" alignment="1" pref="162" max="32767" attributes="1"/>
+                          <Component id="txtOrigin_Country" alignment="1" pref="162" max="32767" attributes="1"/>
+                          <Component id="txtDestination_City" alignment="1" pref="162" max="32767" attributes="1"/>
                       </Group>
+                  </Group>
+              </Group>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                       <Component id="jScrollPane1" pref="501" max="32767" attributes="0"/>
                   </Group>
-                  <Component id="btnSelectFlight" alignment="1" min="-2" max="-2" attributes="0"/>
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace min="-2" pref="428" max="-2" attributes="0"/>
+                      <Component id="btnSelectFlight" min="-2" max="-2" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -119,9 +144,52 @@
                       <Component id="btnReqFlightDetails" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="btnSelectFlight" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="lblCustName" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtCustName" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+              </Group>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="txtAddBlkNo" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblAddBlkNo" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="btnSelectFlight" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="11" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="txtAddStreet" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblAddStName" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="txtAddUnit" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblAddUnit" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="txtAddPostal" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblAddPostal" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="txtCCType" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblCCType" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="txtCCNo" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblCCNo" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="btnMakePayment" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="63" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -296,6 +364,91 @@
         </Property>
         <Property name="text" type="java.lang.String" resourceKey="btnSelectFlight.text"/>
         <Property name="name" type="java.lang.String" value="btnSelectFlight" noResource="true"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblCustName">
+      <Properties>
+        <Property name="text" type="java.lang.String" resourceKey="lblCustName.text"/>
+        <Property name="name" type="java.lang.String" value="lblCustName" noResource="true"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="txtCustName">
+      <Properties>
+        <Property name="text" type="java.lang.String" resourceKey="txtCustName.text"/>
+        <Property name="name" type="java.lang.String" value="txtCustName" noResource="true"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblAddBlkNo">
+      <Properties>
+        <Property name="text" type="java.lang.String" resourceKey="lblAddBlkNo.text"/>
+        <Property name="name" type="java.lang.String" value="lblAddBlkNo" noResource="true"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="txtAddBlkNo">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="txtAddBlkNo" noResource="true"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblAddStName">
+      <Properties>
+        <Property name="text" type="java.lang.String" resourceKey="lblAddStName.text"/>
+        <Property name="name" type="java.lang.String" value="lblAddStName" noResource="true"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="txtAddStreet">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="txtAddStreet" noResource="true"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblAddUnit">
+      <Properties>
+        <Property name="text" type="java.lang.String" resourceKey="lblAddUnit.text"/>
+        <Property name="name" type="java.lang.String" value="lblAddUnit" noResource="true"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="txtAddUnit">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="txtAddUnit" noResource="true"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblAddPostal">
+      <Properties>
+        <Property name="text" type="java.lang.String" resourceKey="lblAddPostal.text"/>
+        <Property name="name" type="java.lang.String" value="lblAddPostal" noResource="true"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="txtAddPostal">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="txtAddPostal" noResource="true"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblCCType">
+      <Properties>
+        <Property name="text" type="java.lang.String" resourceKey="lblCCType.text"/>
+        <Property name="name" type="java.lang.String" value="lblCCType" noResource="true"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="txtCCType">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="txtCCType" noResource="true"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblCCNo">
+      <Properties>
+        <Property name="text" type="java.lang.String" resourceKey="lblCCNo.text"/>
+        <Property name="name" type="java.lang.String" value="lblCCNo" noResource="true"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="txtCCNo">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="txtCCNo" noResource="true"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnMakePayment">
+      <Properties>
+        <Property name="text" type="java.lang.String" resourceKey="btnMakePayment.text"/>
+        <Property name="actionCommand" type="java.lang.String" resourceKey="btnMakePayment.actionCommand"/>
+        <Property name="name" type="java.lang.String" value="btnMakePayment" noResource="true"/>
       </Properties>
     </Component>
   </SubComponents>
