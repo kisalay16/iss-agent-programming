@@ -78,27 +78,31 @@ public class TravelAgent extends Agent{
           getContentManager().registerLanguage(codec, FIPANames.ContentLanguage.FIPA_SL0);
           getContentManager().registerOntology(CreditCardOntology.getInstance());
           
-          DFAgentDescription dfd = new DFAgentDescription();  
+          DFAgentDescription template = new DFAgentDescription();
           ServiceDescription sd = new ServiceDescription();
-          sd.setType("ObjectReaderAgent"); 
-          dfd.addServices(sd);
+          sd.setType("ObjectReaderAgent");
+          template.addServices(sd);
+
           try {
-            while (true) {
-              System.out.println(getLocalName()+ " waiting for an ObjectReaderAgent registering with the DF");
-              SearchConstraints c = new SearchConstraints();
-              c.setMaxDepth(new Long(3));
-              DFAgentDescription[] result = DFService.search(this,dfd,c);
-              if ((result != null) && (result.length > 0)) {
-                dfd = result[0]; 
-                reader = dfd.getName();
-                break;
-              }
-              Thread.sleep(10000);
-            }
-          } catch (Exception fe) {
-              fe.printStackTrace();
-              travelGUI.notifyUser(getLocalName()+" search with DF is not succeeded because of " + fe.getMessage());
-              doDelete();
+            DFAgentDescription[] result = DFService.search(this, template);
+            System.out.println("Found the following weather forecast agent:");
+            reader = new AID();
+            reader = result[0].getName();
+          } catch (FIPAException fe) {
+            fe.printStackTrace();
+          }
+        
+          sd.setType("CreditCardTransaction");
+          template.addServices(sd);
+
+          try {
+            DFAgentDescription[] result = DFService.search(this, template);
+            System.out.println("Found the following Credit Card forecast agent:");
+            creditCardAgent = new AID();
+            creditCardAgent = result[0].getName();
+            System.out.println(creditCardAgent.getName());
+          } catch (FIPAException fe) {
+            fe.printStackTrace();
           }
         
           this.flight = new msgReqFlightAvailability();
@@ -295,7 +299,7 @@ public class TravelAgent extends Agent{
                 
                 // Create an ACL message to query the engager agent if the above fact is true or false
                 ACLMessage queryMsg = new ACLMessage(ACLMessage.QUERY_IF);
-                queryMsg.addReceiver(((TravelAgent) myAgent).creditCardAgent);
+                queryMsg.addReceiver(creditCardAgent);
                 queryMsg.setLanguage(FIPANames.ContentLanguage.FIPA_SL0);
                 queryMsg.setOntology(CreditCardOntology.NAME);
 
@@ -322,6 +326,8 @@ public class TravelAgent extends Agent{
         public CheckCreditCardTransactionBehavior(Agent myAgent, ACLMessage queryMsg) {
             super(myAgent, queryMsg);
             queryMsg.setProtocol(FIPANames.InteractionProtocol.FIPA_QUERY);
+            
+            this.handleInform(queryMsg);
         }
 
         protected void handleInform(ACLMessage msg) {
