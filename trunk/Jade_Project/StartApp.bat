@@ -1,0 +1,1 @@
+java -cp dist/lib/appframework-1.0.3.jar;dist/lib/commons-codec-1.3.jar;dist/lib/jade.jar;dist/lib/swing-worker-1.1.jar;dist/Jade_Project.jar jade.Boot -gui
