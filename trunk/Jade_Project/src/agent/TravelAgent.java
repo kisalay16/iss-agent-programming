@@ -8,6 +8,8 @@ import GUI.TravelAgentGUI;
 import OntologyCreditCard.BelongsTo;
 import OntologyCreditCard.CreditCardOntology;
 import OntologyCreditCard.Person;
+import OntologyWeatherForecast.City;
+import OntologyWeatherForecast.WeatherForecastOntology;
 import jade.content.abs.AbsObject;
 import jade.content.abs.AbsPredicate;
 import jade.content.lang.Codec;
@@ -92,6 +94,19 @@ public class TravelAgent extends Agent{
             fe.printStackTrace();
           }
         
+          sd.setType("CreditCardTransaction");
+          template.addServices(sd);
+
+          try {
+            DFAgentDescription[] result = DFService.search(this, template);
+            System.out.println("Found the following Credit Card forecast agent:");
+            creditCardAgent = new AID();
+            creditCardAgent = result[0].getName();
+            System.out.println(creditCardAgent.getName());
+          } catch (FIPAException fe) {
+            fe.printStackTrace();
+          }
+          
           sd.setType("CreditCardTransaction");
           template.addServices(sd);
 
@@ -366,6 +381,43 @@ public class TravelAgent extends Agent{
             }
             else if(msg.getPerformative() == ACLMessage.REFUSE){
                 travelGUI.notifyUser("Transaction Rejected");
+            }
+        }
+    }
+    
+    //------------------------------weather-----------------------------
+    public class HandleWeatherReuestBehavior extends SequentialBehaviour{
+        private City city;
+        private Behaviour weatherQueryBehaviour = null;
+        private ACLMessage queryMsg;
+        
+        public HandleWeatherReuestBehavior(Agent myAgent, City input){
+            super(myAgent);
+            city = input;
+            
+            onStart();
+        }
+        
+         public void onStart() {
+            try {
+                Ontology o = myAgent.getContentManager().lookupOntology(WeatherForecastOntology.NAME);
+                
+                // Create an ACL message to query the engager agent if the above fact is true or false
+                ACLMessage queryMsg = new ACLMessage(ACLMessage.QUERY_IF);
+                queryMsg.addReceiver(weatherForecastAgent);
+                queryMsg.setLanguage(FIPANames.ContentLanguage.FIPA_SL0);
+                queryMsg.setOntology(CreditCardOntology.NAME);
+
+                try {
+                    //myAgent.getContentManager().fillContent(queryMsg, belongTo);
+                    myAgent.send(queryMsg);
+                   
+                } catch (Exception e) {
+                    travelGUI.notifyUser(e.getMessage());
+                }
+ 
+            } catch (Exception ex) {
+                travelGUI.notifyUser(ex.getMessage());
             }
         }
     }
