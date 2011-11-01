@@ -9,6 +9,8 @@ import OntologyCreditCard.BelongsTo;
 import OntologyCreditCard.CreditCardOntology;
 import OntologyCreditCard.Person;
 import OntologyWeatherForecast.City;
+import OntologyWeatherForecast.IsWeatherForecastAvailable;
+import OntologyWeatherForecast.Weather;
 import OntologyWeatherForecast.WeatherForecastOntology;
 import jade.content.abs.AbsObject;
 import jade.content.abs.AbsPredicate;
@@ -408,6 +410,12 @@ public class TravelAgent extends Agent{
                 queryMsg.setLanguage(FIPANames.ContentLanguage.FIPA_SL0);
                 queryMsg.setOntology(CreditCardOntology.NAME);
 
+                IsWeatherForecastAvailable wf = new IsWeatherForecastAvailable();
+                wf.setCity(city);
+                Weather w = new Weather("NA", "NA", "NA");
+                wf.setWeather(w);
+                wf.setDate("2011/11/01");
+                
                 try {
                     //myAgent.getContentManager().fillContent(queryMsg, belongTo);
                     myAgent.send(queryMsg);
