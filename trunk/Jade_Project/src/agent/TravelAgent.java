@@ -155,15 +155,17 @@ public class TravelAgent extends Agent{
     
     //-------------------------------all methods for the UI------------------------------------
     
-    private class RequestFlightDetails extends CyclicBehaviour {
+    private class RequestFlightDetails extends SequentialBehaviour {
         private MessageTemplate mt; // The template to receive replies
         int step = 0;
         
         public RequestFlightDetails(msgReqFlightAvailability input){
             flight = new msgReqFlightAvailability(input);
+            
+            onStart();
         }
         
-        public void action() {
+        public void onStart() {
             switch(step){
                 case 0: 
                       // Send the cfp to all sellers
@@ -173,8 +175,9 @@ public class TravelAgent extends Agent{
 
                       try{
                           //please refer to \jade_example\src\examples\Base64
-                          MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.CFP);
-                          ACLMessage msg = myAgent.receive(mt);
+                          //MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.CFP);
+                          //ACLMessage msg = myAgent.receive(mt);
+                         
                           cfp.setContentObject(flight);
                           cfp.setLanguage("JavaSerialization");
 
@@ -215,6 +218,15 @@ public class TravelAgent extends Agent{
                               flightAvaResult = (msgFlightAvailability_Result_List)msgAvaResult.getContentObject();
 
                               travelGUI.displayAvaFlights(flightAvaResult);
+                              if(flightAvaResult.getSize() == 0){
+                                  travelGUI.notifyUser("No Flight Available!!!");
+                              }
+                              else{
+                                  travelGUI.notifyUser("Flights available!!!");
+                                  for(int i = 0; i < flightAvaResult.getSize(); i++){
+                                      System.out.println(flightAvaResult.getByIndex(i).getFlightID());
+                                  }
+                              }
                            
                              
                          } catch (UnreadableException ex) {
