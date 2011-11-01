@@ -107,15 +107,15 @@ public class TravelAgent extends Agent{
             fe.printStackTrace();
           }
           
-          sd.setType("CreditCardTransaction");
+          sd.setType("WeatherForecast");
           template.addServices(sd);
 
           try {
             DFAgentDescription[] result = DFService.search(this, template);
             System.out.println("Found the following Credit Card forecast agent:");
-            creditCardAgent = new AID();
-            creditCardAgent = result[0].getName();
-            System.out.println(creditCardAgent.getName());
+            weatherForecastAgent = new AID();
+            weatherForecastAgent = result[0].getName();
+            System.out.println(weatherForecastAgent.getName());
           } catch (FIPAException fe) {
             fe.printStackTrace();
           }
