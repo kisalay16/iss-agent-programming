@@ -412,7 +412,7 @@ public class TravelAgent extends Agent{
                 ACLMessage queryMsg = new ACLMessage(ACLMessage.QUERY_IF);
                 queryMsg.addReceiver(weatherForecastAgent);
                 queryMsg.setLanguage(FIPANames.ContentLanguage.FIPA_SL0);
-                queryMsg.setOntology(CreditCardOntology.NAME);
+                queryMsg.setOntology(WeatherForecastOntology.NAME);
 
                 IsWeatherForecastAvailable wf = new IsWeatherForecastAvailable();
                 wf.setCity(city);
@@ -428,8 +428,8 @@ public class TravelAgent extends Agent{
                     travelGUI.notifyUser(e.getMessage());
                 }
                 
-                weatherForecastQueryBehaviour = new CheckAvailableWeatherForecastBehavior(myAgent, queryMsg);
-                addSubBehaviour(weatherForecastQueryBehaviour);
+                //weatherForecastQueryBehaviour = new CheckAvailableWeatherForecastBehavior(myAgent, queryMsg);
+                //addSubBehaviour(weatherForecastQueryBehaviour);
  
             } catch (Exception ex) {
                 travelGUI.notifyUser(ex.getMessage());
