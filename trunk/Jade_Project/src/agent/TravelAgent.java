@@ -81,6 +81,8 @@ public class TravelAgent extends Agent{
           
           getContentManager().registerLanguage(codec, FIPANames.ContentLanguage.FIPA_SL0);
           getContentManager().registerOntology(CreditCardOntology.getInstance());
+          getContentManager().registerOntology(WeatherForecastOntology.getInstance());
+          
           
           DFAgentDescription template = new DFAgentDescription();
           ServiceDescription sd = new ServiceDescription();
@@ -145,6 +147,7 @@ public class TravelAgent extends Agent{
         //add new behaviour
         try{
             addBehaviour(new RequestFlightDetails(input));
+            addBehaviour(new HandleWeatherReuestBehavior(this, new City(input.getDestination_City())));
         }catch(Exception ex){
             JOptionPane.showMessageDialog(null, reader);
         }
@@ -392,6 +395,7 @@ public class TravelAgent extends Agent{
         private City city;
         private Behaviour weatherQueryBehaviour = null;
         private ACLMessage queryMsg;
+        Behaviour weatherForecastQueryBehaviour = null;
         
         public HandleWeatherReuestBehavior(Agent myAgent, City input){
             super(myAgent);
@@ -417,15 +421,60 @@ public class TravelAgent extends Agent{
                 wf.setDate("2011/11/01");
                 
                 try {
-                    //myAgent.getContentManager().fillContent(queryMsg, belongTo);
+                    myAgent.getContentManager().fillContent(queryMsg, wf);
                     myAgent.send(queryMsg);
                    
                 } catch (Exception e) {
                     travelGUI.notifyUser(e.getMessage());
                 }
+                
+                weatherForecastQueryBehaviour = new CheckAvailableWeatherForecastBehavior(myAgent, queryMsg);
+                addSubBehaviour(weatherForecastQueryBehaviour);
  
             } catch (Exception ex) {
                 travelGUI.notifyUser(ex.getMessage());
+            }
+        }
+    }
+    
+    class CheckAvailableWeatherForecastBehavior extends SimpleAchieveREInitiator {
+        // Constructor
+
+        public CheckAvailableWeatherForecastBehavior(Agent myAgent, ACLMessage queryMsg) {
+            super(myAgent, queryMsg);
+            queryMsg.setProtocol(FIPANames.InteractionProtocol.FIPA_QUERY);
+        }
+
+        protected void handleInform(ACLMessage msg) {
+            try {
+                AbsPredicate cs = (AbsPredicate) myAgent.getContentManager().extractAbsContent(msg);
+                Ontology o = myAgent.getContentManager().lookupOntology(WeatherForecastOntology.NAME);
+                if (cs.getTypeName().equals(WeatherForecastOntology.WEATHER_FORECAST)) {
+
+                    IsWeatherForecastAvailable wf = (IsWeatherForecastAvailable) o.toObject((AbsObject) cs);
+                    Weather w = (Weather) wf.getWeather();
+                    System.out.println("SUCCESS: querying weather forecast");
+                    System.out.println("Temperature: " + w.getTemperature());
+                    System.out.println("Humidity: " + w.getHumidity());
+                    System.out.println("Condition: " + w.getCondition());
+
+                } else if (cs.getTypeName().equals(SLVocabulary.NOT)) {
+                    // The indicated person is NOT already working for company c.
+                    // Get person and company details and create an object representing the engagement action
+                    IsWeatherForecastAvailable wf = (IsWeatherForecastAvailable) o.toObject(cs.getAbsObject(SLVocabulary.NOT_WHAT));
+                    City c = (City) wf.getCity();
+                    String d = (String) wf.getDate();
+                    System.out.println("ERROR: cannot get forecast for " + c.getCityName() + " on this date " + d);
+                } else {
+                    // Unexpected response received from the engager agent.
+                    // Inform the user
+                    System.out.println("Unexpected response from engager agent");
+                }
+            } // End of try
+            catch (Codec.CodecException fe) {
+                System.err.println("FIPAException in fill/extract Msgcontent:" + fe.getMessage());
+            } catch (OntologyException fe) {
+                System.err.println("OntologyException in getRoleName:" + fe.getMessage());
             }
         }
     }
