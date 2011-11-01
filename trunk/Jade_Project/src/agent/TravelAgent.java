@@ -247,7 +247,7 @@ public class TravelAgent extends Agent{
     } // End of inner class OfferRequestsServer
     
     
-    private class BookFlight extends CyclicBehaviour {
+    private class BookFlight extends SequentialBehaviour{
         private String sFlightNo;
         private MessageTemplate mt; // The template to receive replies
         int step = 0;
@@ -256,23 +256,46 @@ public class TravelAgent extends Agent{
         public BookFlight(String flightNo, AID id){
             sFlightNo = flightNo;
             selectedFlightAgentID = id;
+            
+            onStart();
         }
         
-        public void action() {
+        public void onStart() {
             switch(step){
                 case 0: 
-                    // Send the purchase order to the seller that provided the best offer
-                    ACLMessage order = new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
-                    order.addReceiver(selectedAID);
-                    order.setContent(sFlightNo);
-                    order.setConversationId("flight-trade");
-                    order.setReplyWith("order" +System.currentTimeMillis());
-                    myAgent.send(order);
-                    // Prepare the template to get the purchase order reply
-                    mt = MessageTemplate.and(MessageTemplate.MatchConversationId("book-trade"),
-                                    MessageTemplate.MatchInReplyTo(order.getReplyWith()));
-                    step = 1;
-                    break;
+                    // Send the cfp to all sellers
+                      ACLMessage acceptPro = new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
+
+                      acceptPro.addReceiver(selectedAID);
+
+                      try{
+                          //please refer to \jade_example\src\examples\Base64
+                          //MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.CFP);
+                          //ACLMessage msg = myAgent.receive(mt);
+                         
+                          acceptPro.setContent(sFlightNo);
+                          acceptPro.setLanguage("JavaSerialization");
+
+                          acceptPro.setDefaultEnvelope();
+                          send(acceptPro);
+                      }
+                      catch(Exception ex){
+                          travelGUI.notifyUser(ex.getMessage());
+                          return;
+                      }
+
+                      acceptPro.setConversationId("flight-trade");
+                      acceptPro.setReplyWith("cfp" + System.currentTimeMillis()); // Unique value
+                      send(acceptPro);
+
+                      // Prepare the template to get proposals
+                      mt = MessageTemplate.and(
+                        MessageTemplate.MatchConversationId("flight-trade"),
+                        MessageTemplate.MatchInReplyTo(acceptPro.getReplyWith()));
+                        step = 1; //waiting for reply
+                      break;
+                    
+                    
                 case 1:
                     ACLMessage msgAvaResult = blockingReceive(); 
                     
